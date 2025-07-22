@@ -275,18 +275,18 @@ export function SiteHeader() {
                 {t('sidebar.results')}
                 </Link>
             )}
-             <div className="hidden md:flex">
+             <div className="flex items-center">
                  {!loading && (
                     user ? (
                         <Button variant="ghost" onClick={handleSignOut}>
                             <LogOut className="h-4 w-4 mr-2" />
-                            <span>{t('sidebar.sign_out')}</span>
+                            <span className="hidden sm:inline">{t('sidebar.sign_out')}</span>
                         </Button>
                     ) : (
                         <Button variant="ghost" asChild>
                             <Link href="/login">
                                 <LogIn className="h-4 w-4 mr-2" />
-                                <span>{t('sidebar.sign_in')}</span>
+                                <span className="hidden sm:inline">{t('sidebar.sign_in')}</span>
                             </Link>
                         </Button>
                     )
