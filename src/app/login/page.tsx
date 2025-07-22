@@ -68,7 +68,7 @@ const AuthForm = ({ type, form, onSubmit, isLoading }: AuthFormProps) => {
             ) : (
               <LogIn className="mr-2 h-4 w-4" />
             )}
-            {type === 'signIn' ? t('sidebar.sign_in') : t('sidebar.sign_out')}
+            {type === 'signIn' ? t('sidebar.sign_in') : t('login.sign_up_button')}
           </Button>
         </form>
       </Form>
@@ -125,7 +125,7 @@ export default function LoginPage() {
       >
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="signIn">{t('sidebar.sign_in')}</TabsTrigger>
-          <TabsTrigger value="signUp">{t('sidebar.sign_out')}</TabsTrigger>
+          <TabsTrigger value="signUp">{t('login.sign_up_button')}</TabsTrigger>
         </TabsList>
         <TabsContent value="signIn">
           <Card>

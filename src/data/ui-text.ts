@@ -188,6 +188,7 @@ export const uiText = {
   "login.password_label": "Password",
   "login.email_placeholder": "you@example.com",
   "login.password_placeholder": "••••••••",
+  "login.sign_up_button": "Sign Up",
 
   // Language Modal
   "language_modal.title": "Choose Your Language",

@@ -102,7 +102,12 @@ const MobileNav = () => {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  
+  const handleSignOut = async () => {
+    await auth.signOut();
+    setOpen(false);
+  };
   
   const links = [
     { href: '/', label: t('sidebar.home') },
@@ -141,7 +146,7 @@ const MobileNav = () => {
             <Wand2 className="h-6 w-6 text-accent" />
             <span className="font-bold">{t('sidebar.title')}</span>
           </Link>
-          <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
+          <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6 flex flex-col justify-between">
             <div className="flex flex-col space-y-3">
               {links.map((item) => (
                   <Link
@@ -179,6 +184,21 @@ const MobileNav = () => {
                   </DropdownMenu>
                </div>
             </div>
+            {!loading && (
+                user ? (
+                    <Button variant="ghost" onClick={handleSignOut} className="justify-start">
+                        <LogOut className="h-4 w-4 mr-2" />
+                        <span>{t('sidebar.sign_out')}</span>
+                    </Button>
+                ) : (
+                    <Button variant="ghost" asChild className="justify-start">
+                        <Link href="/login" onClick={() => setOpen(false)}>
+                            <LogIn className="h-4 w-4 mr-2" />
+                            <span>{t('sidebar.sign_in')}</span>
+                        </Link>
+                    </Button>
+                )
+            )}
           </div>
         </SheetContent>
       </Sheet>
@@ -255,21 +275,23 @@ export function SiteHeader() {
                 {t('sidebar.results')}
                 </Link>
             )}
-             {!loading && (
-                user ? (
-                    <Button variant="ghost" className="hidden md:inline-flex" onClick={handleSignOut}>
-                        <LogOut className="h-4 w-4 mr-2" />
-                        <span>{t('sidebar.sign_out')}</span>
-                    </Button>
-                ) : (
-                    <Button variant="ghost" className="hidden md:inline-flex" asChild>
-                        <Link href="/login">
-                            <LogIn className="h-4 w-4 mr-2" />
-                            <span>{t('sidebar.sign_in')}</span>
-                        </Link>
-                    </Button>
-                )
-            )}
+             <div className="hidden md:flex">
+                 {!loading && (
+                    user ? (
+                        <Button variant="ghost" onClick={handleSignOut}>
+                            <LogOut className="h-4 w-4 mr-2" />
+                            <span>{t('sidebar.sign_out')}</span>
+                        </Button>
+                    ) : (
+                        <Button variant="ghost" asChild>
+                            <Link href="/login">
+                                <LogIn className="h-4 w-4 mr-2" />
+                                <span>{t('sidebar.sign_in')}</span>
+                            </Link>
+                        </Button>
+                    )
+                )}
+             </div>
           </nav>
         </div>
       </div>
