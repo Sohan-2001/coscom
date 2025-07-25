@@ -37,6 +37,9 @@ export default function RootLayout({
               <main className="flex-1 px-4 md:px-8 z-10">
                 {children}
               </main>
+              <footer className="z-10 py-6 text-center text-sm text-muted-foreground">
+                a sarmasol product
+              </footer>
             </div>
             <Toaster />
           </LanguageProvider>
