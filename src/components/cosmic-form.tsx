@@ -95,10 +95,10 @@ export function CosmicForm() {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-8">
+    <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 sm:gap-6 md:gap-8">
       <div className="md:col-span-1 xl:col-span-3">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 md:space-y-8">
             <Card className="bg-card/80 backdrop-blur-sm border-border/50">
               <CardHeader>
                 <CardTitle className="font-headline text-3xl">Your Celestial Blueprint</CardTitle>
@@ -127,8 +127,8 @@ export function CosmicForm() {
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                          <div className="bg-teal-500 text-white p-4 rounded-t-md">
+                          <PopoverContent className="w-auto p-4 m-2" align="start">
+                          <div className="bg-teal-500 text-white p-4 rounded-t-md -m-4 mb-4">
                               <div className="text-lg">{field.value ? format(field.value, 'yyyy') : new Date().getFullYear()}</div>
                               <div className="text-2xl font-bold">{field.value ? format(field.value, 'E, MMM d') : 'Pick a date'}</div>
                             </div>
@@ -264,7 +264,3 @@ export function CosmicForm() {
     </div>
   );
 }
-
-    
-
-    
