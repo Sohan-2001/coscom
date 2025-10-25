@@ -40,9 +40,9 @@ export default function Home() {
         })}
       </div>
 
-      <div className="relative z-20 flex flex-col items-center justify-center p-4 sm:p-8">
-        <header className="text-center my-12 md:my-24">
-          <h1 className="font-headline text-5xl md:text-7xl text-white tracking-wider drop-shadow-lg">
+      <div className="relative z-20 flex flex-col items-center p-4 sm:p-6 md:p-8">
+        <header className="text-center my-8 sm:my-12 md:my-16 lg:my-24">
+          <h1 className="font-headline text-5xl sm:text-6xl md:text-7xl text-white tracking-wider drop-shadow-lg">
             Cosmic Compass
           </h1>
           <p className="font-body text-lg md:text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">
@@ -52,7 +52,7 @@ export default function Home() {
 
         <CosmicForm />
 
-        <footer className="w-full text-center mt-24 pb-8">
+        <footer className="w-full text-center mt-16 sm:mt-24 pb-8">
           <p className="text-sm text-muted-foreground">
             Created with mystical energies and code.
           </p>
@@ -61,3 +61,5 @@ export default function Home() {
     </main>
   );
 }
+
+    

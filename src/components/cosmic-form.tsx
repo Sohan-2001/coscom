@@ -95,8 +95,8 @@ export function CosmicForm() {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8">
-      <div className="lg:col-span-3">
+    <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-8">
+      <div className="md:col-span-1 xl:col-span-3">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <Card className="bg-card/80 backdrop-blur-sm border-border/50">
@@ -105,7 +105,7 @@ export function CosmicForm() {
                 <CardDescription>Enter your birth details to generate your chart.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="date"
@@ -232,7 +232,7 @@ export function CosmicForm() {
         </Form>
       </div>
 
-      <div className="lg:col-span-2">
+      <div className="md:col-span-1 xl:col-span-2">
         <Card className="sticky top-8 bg-card/80 backdrop-blur-sm border-border/50 min-h-[400px]">
           <CardHeader>
             <CardTitle className="font-headline text-3xl">Your Cosmic Reading</CardTitle>
@@ -264,5 +264,7 @@ export function CosmicForm() {
     </div>
   );
 }
+
+    
 
     
