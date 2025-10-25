@@ -39,6 +39,55 @@ const formSchema = z.object({
   palmImage: z.string().min(1, 'Please upload an image of your palm.'),
 });
 
+function CalendarWithOkButton({ field }: { field: any }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(field.value);
+
+  const handleOkClick = () => {
+    field.onChange(selectedDate);
+    setIsOpen(false);
+  };
+
+  return (
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger asChild>
+        <FormControl>
+          <Button
+            variant={'outline'}
+            className={cn(
+              'w-full pl-3 text-left font-normal bg-background/80',
+              !field.value && 'text-muted-foreground'
+            )}
+          >
+            {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
+            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+          </Button>
+        </FormControl>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <div className="bg-teal-500 text-white p-3 rounded-t-md">
+          <div className="text-md">{selectedDate ? format(selectedDate, 'yyyy') : new Date().getFullYear()}</div>
+          <div className="text-xl font-bold">{selectedDate ? format(selectedDate, 'E, MMM d') : 'Pick a date'}</div>
+        </div>
+        <Calendar
+          mode="single"
+          captionLayout="dropdown-buttons"
+          fromYear={1900}
+          toYear={new Date().getFullYear()}
+          selected={selectedDate}
+          onSelect={setSelectedDate}
+          disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
+          initialFocus
+        />
+        <div className="p-2 border-t flex justify-end">
+          <Button onClick={handleOkClick} size="sm">OK</Button>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+
 export function CosmicForm() {
   const [isPending, startTransition] = useTransition();
   const [reading, setReading] = useState<string | null>(null);
@@ -112,38 +161,7 @@ export function CosmicForm() {
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
                         <FormLabel>Date of Birth</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={'outline'}
-                                className={cn(
-                                  'w-full pl-3 text-left font-normal bg-background/80',
-                                  !field.value && 'text-muted-foreground'
-                                )}
-                              >
-                                {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-4 m-2" align="start">
-                          <div className="bg-teal-500 text-white p-4 rounded-t-md -m-4 mb-4">
-                              <div className="text-lg">{field.value ? format(field.value, 'yyyy') : new Date().getFullYear()}</div>
-                              <div className="text-2xl font-bold">{field.value ? format(field.value, 'E, MMM d') : 'Pick a date'}</div>
-                            </div>
-                            <Calendar
-                              mode="single"
-                              captionLayout="dropdown-buttons"
-                              fromYear={1900}
-                              toYear={new Date().getFullYear()}
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
+                        <CalendarWithOkButton field={field} />
                         <FormMessage />
                       </FormItem>
                     )}
