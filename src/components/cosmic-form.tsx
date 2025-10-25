@@ -4,10 +4,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useRef } from 'react';
 import Image from 'next/image';
 import { format } from 'date-fns';
-import { CalendarIcon, Loader2 } from 'lucide-react';
+import { CalendarIcon, Loader2, Upload } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -23,11 +23,9 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { generatePersonalizedInsightsAction } from '@/lib/actions';
 
 const formSchema = z.object({
@@ -38,50 +36,37 @@ const formSchema = z.object({
     message: 'Please enter a valid time in HH:MM format.',
   }),
   location: z.string().min(2, 'Location must be at least 2 characters.'),
-  heartLine: z.string().min(1, 'Please select a Heart Line description.'),
-  headLine: z.string().min(1, 'Please select a Head Line description.'),
-  lifeLine: z.string().min(1, 'Please select a Life Line description.'),
+  palmImage: z.string().min(1, 'Please upload an image of your palm.'),
 });
-
-const palmistryOptions = {
-  heartLine: [
-    'Long and curved, showing emotional expressiveness.',
-    'Short and straight, indicating reserved emotions.',
-    'Starts below the index finger, suggesting a satisfying love life.',
-    'Wavy, pointing to many relationships.',
-  ],
-  headLine: [
-    'Long and straight, indicating logical thinking.',
-    'Short and clear, showing practicality and focus.',
-    'Curved or sloping, signifying creativity.',
-    'Line is separated from life line, suggesting an adventurous spirit.',
-  ],
-  lifeLine: [
-    'Long and deep, indicating vitality and a long life.',
-    'Short and shallow, suggesting life may be controlled by others.',
-    'Curved in a semicircle, showing strength and enthusiasm.',
-    'Multiple life lines, pointing to extra vitality.',
-  ],
-};
-
-type PalmLine = keyof typeof palmistryOptions;
 
 export function CosmicForm() {
   const [isPending, startTransition] = useTransition();
   const [reading, setReading] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { toast } = useToast();
-  const palmImage = PlaceHolderImages.find((img) => img.id === 'palm-image');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       time: '12:00',
       location: '',
-      heartLine: '',
-      headLine: '',
-      lifeLine: '',
+      palmImage: '',
     },
   });
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const dataUrl = reader.result as string;
+        setImagePreview(dataUrl);
+        form.setValue('palmImage', dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setReading(null);
@@ -93,9 +78,7 @@ export function CosmicForm() {
           location: values.location,
         },
         palmistryInput: {
-          heartLine: values.heartLine,
-          headLine: values.headLine,
-          lifeLine: values.lifeLine,
+          palmImage: values.palmImage,
         },
       });
 
@@ -110,33 +93,6 @@ export function CosmicForm() {
       }
     });
   }
-  
-  const renderPalmistryField = (name: PalmLine, label: string) => (
-    <FormField
-      control={form.control}
-      name={name}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="text-foreground/80">{label}</FormLabel>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
-            <FormControl>
-              <SelectTrigger className="bg-background/80">
-                <SelectValue placeholder={`Select your ${label.toLowerCase()}...`} />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              {palmistryOptions[name].map((option) => (
-                <SelectItem key={option} value={option}>
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
 
   return (
     <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8">
@@ -218,26 +174,47 @@ export function CosmicForm() {
             <Card className="bg-card/80 backdrop-blur-sm border-border/50">
               <CardHeader>
                 <CardTitle className="font-headline text-3xl">The Lines of Fate</CardTitle>
-                <CardDescription>Describe the major lines on your dominant hand.</CardDescription>
+                <CardDescription>Upload an image of your dominant hand's palm.</CardDescription>
               </CardHeader>
-              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                 {palmImage && (
-                    <div className="relative w-full max-w-xs mx-auto">
-                        <Image
-                            src={palmImage.imageUrl}
-                            alt={palmImage.description}
-                            width={600}
-                            height={800}
-                            className="rounded-lg object-contain"
-                            data-ai-hint={palmImage.imageHint}
-                        />
-                    </div>
-                 )}
-                <div className="space-y-4">
-                  {renderPalmistryField('heartLine', 'Heart Line')}
-                  {renderPalmistryField('headLine', 'Head Line')}
-                  {renderPalmistryField('lifeLine', 'Life Line')}
-                </div>
+              <CardContent>
+                <FormField
+                  control={form.control}
+                  name="palmImage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div
+                          className="w-full h-64 border-2 border-dashed border-muted-foreground/50 rounded-lg flex flex-col items-center justify-center text-center cursor-pointer hover:bg-muted/10 transition-colors"
+                          onClick={() => fileInputRef.current?.click()}
+                        >
+                          <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleImageChange}
+                            className="hidden"
+                            accept="image/*"
+                          />
+                          {imagePreview ? (
+                            <Image
+                              src={imagePreview}
+                              alt="Palm preview"
+                              width={256}
+                              height={256}
+                              className="max-h-full w-auto object-contain rounded-md"
+                            />
+                          ) : (
+                            <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                              <Upload className="h-8 w-8" />
+                              <p>Click to upload an image</p>
+                              <p className="text-xs">PNG, JPG, GIF up to 10MB</p>
+                            </div>
+                          )}
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </CardContent>
             </Card>
             

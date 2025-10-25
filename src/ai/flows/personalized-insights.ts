@@ -18,9 +18,7 @@ const AstrologicalChartSchema = z.object({
 });
 
 const PalmistryInputSchema = z.object({
-  heartLine: z.string().describe('Description of the heart line.'),
-  headLine: z.string().describe('Description of the head line.'),
-  lifeLine: z.string().describe('Description of the life line.'),
+  palmImage: z.string().describe("A photo of a user's palm, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."),
 });
 
 const PersonalizedInsightsInputSchema = z.object({
@@ -42,19 +40,17 @@ const prompt = ai.definePrompt({
   name: 'personalizedInsightsPrompt',
   input: {schema: PersonalizedInsightsInputSchema},
   output: {schema: PersonalizedInsightsOutputSchema},
-  prompt: `You are an expert in Vedic astrology and palmistry. You will generate personalized insights based on the provided astrological chart and palmistry inputs.
+  prompt: `You are an expert in Vedic astrology and palmistry. You will generate personalized insights based on the provided astrological chart and an image of the user's palm.
 
 Astrological Chart:
 Date: {{{astrologicalChart.date}}}
 Time: {{{astrologicalChart.time}}}
 Location: {{{astrologicalChart.location}}}
 
-Palmistry Inputs:
-Heart Line: {{{palmistryInput.heartLine}}}
-Head Line: {{{palmistryInput.headLine}}}
-Life Line: {{{palmistryInput.lifeLine}}}
+Palmistry Input (analyze the provided image):
+{{media url=palmistryInput.palmImage}}
 
-Combine the information from the astrological chart and palmistry inputs to provide comprehensive and personalized insights. Focus on potential life events, influences, and personal characteristics.
+Combine the information from the astrological chart and the analysis of the palm image to provide comprehensive and personalized insights. Analyze the heart, head, and life lines from the image. Focus on potential life events, influences, and personal characteristics.
 `,
 });
 
