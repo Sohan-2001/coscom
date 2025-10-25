@@ -42,8 +42,8 @@ export default function Home() {
 
       <div className="relative z-20 flex flex-col items-center justify-center p-4 sm:p-8">
         <header className="text-center my-12 md:my-24">
-          <h1 className="font-headline text-5xl md:text-7xl text-primary-foreground tracking-wider drop-shadow-lg">
-            Cosmic Insights
+          <h1 className="font-headline text-5xl md:text-7xl text-white tracking-wider drop-shadow-lg">
+            Cosmic Compass
           </h1>
           <p className="font-body text-lg md:text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">
             Unveil Your Destiny in the Stars and on Your Palms.

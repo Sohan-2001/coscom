@@ -4,7 +4,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'Cosmic Insights',
+  title: 'Cosmic Compass',
   description: 'Unveil Your Destiny in the Stars and on Your Palms.',
 };
 
