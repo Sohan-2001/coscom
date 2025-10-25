@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Calendar } from '@/components/ui/calendar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
@@ -49,8 +49,8 @@ function CalendarWithOkButton({ field }: { field: any }) {
   };
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
         <FormControl>
           <Button
             variant={'outline'}
@@ -63,8 +63,8 @@ function CalendarWithOkButton({ field }: { field: any }) {
             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
           </Button>
         </FormControl>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      </DialogTrigger>
+      <DialogContent className="w-auto p-0">
         <div className="bg-teal-500 text-white p-3 rounded-t-md">
           <div className="text-md">{selectedDate ? format(selectedDate, 'yyyy') : new Date().getFullYear()}</div>
           <div className="text-xl font-bold">{selectedDate ? format(selectedDate, 'E, MMM d') : 'Pick a date'}</div>
@@ -82,8 +82,8 @@ function CalendarWithOkButton({ field }: { field: any }) {
         <div className="p-2 border-t flex justify-end">
           <Button onClick={handleOkClick} size="sm">OK</Button>
         </div>
-      </PopoverContent>
-    </Popover>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -144,7 +144,7 @@ export function CosmicForm() {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 sm:gap-6 md:gap-8">
+    <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 sm:gap-6 md:gap-8 p-4">
       <div className="md:col-span-1 xl:col-span-3">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 md:space-y-8">
