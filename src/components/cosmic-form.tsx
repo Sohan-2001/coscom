@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Calendar } from '@/components/ui/calendar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
@@ -65,6 +65,7 @@ function CalendarWithOkButton({ field }: { field: any }) {
         </FormControl>
       </DialogTrigger>
       <DialogContent className="w-auto p-0">
+        <DialogTitle className="sr-only">Select Date of Birth</DialogTitle>
         <div className="bg-teal-500 text-white p-3 rounded-t-md">
           <div className="text-md">{selectedDate ? format(selectedDate, 'yyyy') : new Date().getFullYear()}</div>
           <div className="text-xl font-bold">{selectedDate ? format(selectedDate, 'E, MMM d') : 'Pick a date'}</div>
