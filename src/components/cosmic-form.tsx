@@ -145,10 +145,10 @@ export function CosmicForm() {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 sm:gap-6 md:gap-8 p-4">
-      <div className="md:col-span-1 xl:col-span-3">
+    <div className="w-full max-w-4xl mx-auto flex flex-col items-center gap-8 p-4">
+      <div className="w-full">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 md:space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <Card className="bg-card/80 backdrop-blur-sm border-border/50">
               <CardHeader>
                 <CardTitle className="font-headline text-3xl">Your Celestial Blueprint</CardTitle>
@@ -251,8 +251,8 @@ export function CosmicForm() {
         </Form>
       </div>
 
-      <div className="md:col-span-1 xl:col-span-2">
-        <Card className="sticky top-8 bg-card/80 backdrop-blur-sm border-border/50 min-h-[400px]">
+      <div className="w-full">
+        <Card className="bg-card/80 backdrop-blur-sm border-border/50 min-h-[400px]">
           <CardHeader>
             <CardTitle className="font-headline text-3xl">Your Cosmic Reading</CardTitle>
             <CardDescription>Insights woven from the stars and your palm.</CardDescription>
