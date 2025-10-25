@@ -8,6 +8,7 @@ import { useState, useTransition, useRef } from 'react';
 import Image from 'next/image';
 import { format } from 'date-fns';
 import { CalendarIcon, Loader2, Upload } from 'lucide-react';
+import { type PersonalizedInsightsOutput } from '@/ai/flows/personalized-insights';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -27,6 +28,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { generatePersonalizedInsightsAction } from '@/lib/actions';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 const formSchema = z.object({
   date: z.date({
@@ -91,7 +93,7 @@ function CalendarWithOkButton({ field }: { field: any }) {
 
 export function CosmicForm() {
   const [isPending, startTransition] = useTransition();
-  const [reading, setReading] = useState<string | null>(null);
+  const [reading, setReading] = useState<PersonalizedInsightsOutput | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -133,7 +135,7 @@ export function CosmicForm() {
       });
 
       if (result.success) {
-        setReading(result.data?.insights ?? 'No insights could be generated.');
+        setReading(result.data ?? null);
       } else {
         toast({
           variant: 'destructive',
@@ -143,6 +145,16 @@ export function CosmicForm() {
       }
     });
   }
+
+  const readingSections = reading ? [
+    { title: 'Foundational Overview', content: reading.foundationalOverview },
+    { title: 'Career, Wealth & Success', content: reading.careerWealthSuccess },
+    { title: 'Health & Vitality', content: reading.healthVitality },
+    { title: 'Love & Relationships', content: reading.loveRelationships },
+    { title: 'Personality & Inner Growth', content: reading.personalityInnerGrowth },
+    { title: 'Life Path & Timeline Summary', content: reading.lifePathTimeline },
+    { title: 'Guidance & Remedies', content: reading.guidanceRemedies },
+  ] : [];
 
   return (
     <div className="w-full max-w-4xl mx-auto flex flex-col items-center gap-8 p-4">
@@ -268,9 +280,18 @@ export function CosmicForm() {
               </div>
             )}
             {reading && !isPending && (
-                <div className="prose prose-lg dark:prose-invert font-body whitespace-pre-wrap leading-relaxed">
-                    {reading}
-                </div>
+              <Accordion type="single" collapsible className="w-full" defaultValue="item-0">
+                {readingSections.map((section, index) => (
+                   section.content && <AccordionItem key={index} value={`item-${index}`}>
+                    <AccordionTrigger className="font-headline text-xl">{section.title}</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="prose prose-lg dark:prose-invert font-body whitespace-pre-wrap leading-relaxed">
+                        {section.content}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
             )}
             {!reading && !isPending && (
                 <div className="text-center text-muted-foreground flex flex-col items-center justify-center min-h-[200px]">

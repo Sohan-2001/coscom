@@ -5,7 +5,7 @@ import { getPersonalizedInsights, type PersonalizedInsightsInput } from '@/ai/fl
 export async function generatePersonalizedInsightsAction(input: PersonalizedInsightsInput) {
   try {
     const result = await getPersonalizedInsights(input);
-    if (!result || !result.insights) {
+    if (!result) {
       return { success: false, error: 'The cosmos is quiet... No insights were generated.' };
     }
     return { success: true, data: result };

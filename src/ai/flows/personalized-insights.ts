@@ -28,7 +28,13 @@ const PersonalizedInsightsInputSchema = z.object({
 export type PersonalizedInsightsInput = z.infer<typeof PersonalizedInsightsInputSchema>;
 
 const PersonalizedInsightsOutputSchema = z.object({
-  insights: z.string().describe('Personalized insights combining astrology and palmistry.'),
+  foundationalOverview: z.string().describe("The individual's overall life theme, personality traits, and planetary strengths based on both astrology and palmistry."),
+  careerWealthSuccess: z.string().describe('Integrated analysis of career, wealth, and success prospects, correlating horoscope houses with palm lines.'),
+  healthVitality: z.string().describe('Insights into health and vitality, combining analysis of the horoscope with the Life Line on the palm.'),
+  loveRelationships: z.string().describe("Analysis of love and relationships, blending insights from the user's birth chart and palm's Heart and Union lines."),
+  personalityInnerGrowth: z.string().describe('A psychological profile merging astrological data with insights from the Head and Heart lines of the palm.'),
+  lifePathTimeline: z.string().describe('A chronological summary of life phases, aligning planetary periods (Dashas) with palm milestones.'),
+  guidanceRemedies: z.string().describe('Balanced recommendations from both Vedic astrology and palmistry traditions to harmonize life direction.'),
 });
 export type PersonalizedInsightsOutput = z.infer<typeof PersonalizedInsightsOutputSchema>;
 
