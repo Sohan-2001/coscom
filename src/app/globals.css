@@ -80,19 +80,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-@layer utilities {
-  @keyframes twinkle {
-    0%, 100% {
-      opacity: 0.2;
-      transform: scale(0.95);
-    }
-    50% {
-      opacity: 1;
-      transform: scale(1.05);
-    }
-  }
-  .animate-twinkle {
-    animation: twinkle 5s ease-in-out infinite;
-  }
-}
