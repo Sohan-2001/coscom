@@ -128,6 +128,10 @@ export function CosmicForm() {
                             </FormControl>
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0" align="start">
+                          <div className="bg-teal-500 text-white p-4 rounded-t-md">
+                              <div className="text-lg">{field.value ? format(field.value, 'yyyy') : new Date().getFullYear()}</div>
+                              <div className="text-2xl font-bold">{field.value ? format(field.value, 'E, MMM d') : 'Pick a date'}</div>
+                            </div>
                             <Calendar
                               mode="single"
                               captionLayout="dropdown-buttons"
@@ -260,3 +264,5 @@ export function CosmicForm() {
     </div>
   );
 }
+
+    
