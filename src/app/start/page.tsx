@@ -1,15 +1,10 @@
 
-'use client';
-
 import Image from 'next/image';
+import { CosmicForm } from '@/components/cosmic-form';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
-export default function Home() {
+export default function StartPage() {
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-background');
-  const router = useRouter();
 
   return (
     <main className="relative min-h-screen w-full overflow-hidden">
@@ -25,8 +20,8 @@ export default function Home() {
       )}
       <div className="absolute inset-0 z-10 bg-gradient-to-b from-transparent via-transparent to-background" />
 
-      <div className="relative z-20 flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 md:p-8">
-        <header className="text-center">
+      <div className="relative z-20 flex flex-col items-center p-4 sm:p-6 md:p-8">
+        <header className="text-center my-8 sm:my-12">
           <h1 className="font-headline text-5xl sm:text-6xl md:text-7xl text-white tracking-wider drop-shadow-lg font-bold">
             Cosmic Compass
           </h1>
@@ -35,15 +30,11 @@ export default function Home() {
           </p>
         </header>
 
-        <div className="mt-12">
-          <Link href="/start" passHref>
-            <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground text-xl px-12 py-8">
-              <a>Let's Start</a>
-            </Button>
-          </Link>
+        <div className="w-full flex flex-col items-center gap-8">
+            <CosmicForm />
         </div>
 
-        <footer className="absolute bottom-0 w-full text-center pb-8">
+        <footer className="w-full text-center mt-16 sm:mt-24 pb-8">
           <p className="text-sm text-muted-foreground">
             Created with mystical energies and code.
           </p>
