@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { useState, useTransition, useRef } from 'react';
 import Image from 'next/image';
 import { format } from 'date-fns';
-import { CalendarIcon, Loader2, Upload } from 'lucide-react';
+import { CalendarIcon, Loader2, Upload, Star } from 'lucide-react';
 import { type PersonalizedInsightsOutput } from '@/ai/flows/personalized-insights';
 
 import { Button } from '@/components/ui/button';
@@ -27,8 +27,9 @@ import { Calendar } from '@/components/ui/calendar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { generatePersonalizedInsightsAction } from '@/lib/actions';
+import { generatePersonalizedInsightsAction, saveReadingAction } from '@/lib/actions';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { useUser } from '@/firebase';
 
 const formSchema = z.object({
   date: z.date({
@@ -92,7 +93,9 @@ function CalendarWithOkButton({ field }: { field: any }) {
 
 
 export function CosmicForm() {
+  const { user } = useUser();
   const [isPending, startTransition] = useTransition();
+  const [isSaving, startSavingTransition] = useTransition();
   const [reading, setReading] = useState<PersonalizedInsightsOutput | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { toast } = useToast();
@@ -145,6 +148,30 @@ export function CosmicForm() {
       }
     });
   }
+
+  const handleSaveReading = () => {
+    if (!reading || !user) return;
+    const values = form.getValues();
+    startSavingTransition(async () => {
+      const result = await saveReadingAction(user.uid, reading, {
+        date: values.date,
+        time: values.time,
+        location: values.location
+      });
+      if (result.success) {
+        toast({
+          title: 'Reading Saved!',
+          description: 'Your cosmic insights have been saved to your profile.',
+        });
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Failed to Save',
+          description: result.error,
+        });
+      }
+    });
+  };
 
   const readingSections = reading ? [
     { title: 'Foundational Overview', content: reading.foundationalOverview },
@@ -266,8 +293,22 @@ export function CosmicForm() {
       <div className="w-full">
         <Card className="bg-card/80 backdrop-blur-sm border-border/50 min-h-[400px]">
           <CardHeader>
-            <CardTitle className="font-headline text-3xl">Your Cosmic Reading</CardTitle>
-            <CardDescription>Insights woven from the stars and your palm.</CardDescription>
+            <div className="flex justify-between items-center">
+              <div>
+                <CardTitle className="font-headline text-3xl">Your Cosmic Reading</CardTitle>
+                <CardDescription>Insights woven from the stars and your palm.</CardDescription>
+              </div>
+              {reading && !isPending && (
+                <Button onClick={handleSaveReading} disabled={isSaving}>
+                  {isSaving ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Star className="mr-2 h-4 w-4" />
+                  )}
+                  Save Reading
+                </Button>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             {isPending && (

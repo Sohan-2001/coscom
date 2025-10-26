@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "User": {
@@ -27,115 +28,65 @@
         "creationDate"
       ]
     },
-    "BirthChart": {
+    "Reading": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "BirthChart",
+      "title": "Reading",
       "type": "object",
-      "description": "Stores birth chart information for a user.",
+      "description": "Stores a generated reading for a user.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the BirthChart entity."
+          "description": "Unique identifier for the Reading entity."
         },
         "userId": {
           "type": "string",
-          "description": "Reference to User. (Relationship: User 1:N BirthChart)"
+          "description": "Reference to User. (Relationship: User 1:N Reading)"
+        },
+        "readingDate": {
+          "type": "string",
+          "description": "Date the reading was generated.",
+          "format": "date-time"
         },
         "birthDate": {
           "type": "string",
-          "description": "User's birth date (YYYY-MM-DD).",
           "format": "date-time"
         },
         "birthTime": {
-          "type": "string",
-          "description": "User's birth time (HH:MM:SS)."
+          "type": "string"
         },
         "birthLocation": {
-          "type": "string",
-          "description": "User's birth location."
+          "type": "string"
+        },
+        "foundationalOverview": {
+          "type": "string"
+        },
+        "careerWealthSuccess": {
+          "type": "string"
+        },
+        "healthVitality": {
+          "type": "string"
+        },
+        "loveRelationships": {
+          "type": "string"
+        },
+        "personalityInnerGrowth": {
+          "type": "string"
+        },
+        "lifePathTimeline": {
+          "type": "string"
+        },
+        "guidanceRemedies": {
+          "type": "string"
         }
       },
       "required": [
         "id",
         "userId",
+        "readingDate",
         "birthDate",
         "birthTime",
-        "birthLocation"
-      ]
-    },
-    "PalmReading": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "PalmReading",
-      "type": "object",
-      "description": "Stores palm reading data for a user.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the PalmReading entity."
-        },
-        "userId": {
-          "type": "string",
-          "description": "Reference to User. (Relationship: User 1:N PalmReading)"
-        },
-        "selectedLines": {
-          "type": "array",
-          "description": "Array of selected palm lines.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "readingDate": {
-          "type": "string",
-          "description": "Date the palm reading was generated.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "userId",
-        "selectedLines",
-        "readingDate"
-      ]
-    },
-    "VedicReading": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "VedicReading",
-      "type": "object",
-      "description": "Stores the Vedic astrology reading and personalized insights.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the VedicReading entity."
-        },
-        "userId": {
-          "type": "string",
-          "description": "Reference to User. (Relationship: User 1:N VedicReading)"
-        },
-        "birthChartId": {
-          "type": "string",
-          "description": "Reference to BirthChart. (Relationship: BirthChart 1:N VedicReading)"
-        },
-        "palmReadingId": {
-          "type": "string",
-          "description": "Reference to PalmReading. (Relationship: PalmReading 1:N VedicReading)"
-        },
-        "readingText": {
-          "type": "string",
-          "description": "The generated Vedic reading text."
-        },
-        "readingDate": {
-          "type": "string",
-          "description": "Date the Vedic reading was generated.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "userId",
-        "birthChartId",
-        "palmReadingId",
-        "readingText",
-        "readingDate"
+        "birthLocation",
+        "foundationalOverview"
       ]
     }
   },
@@ -164,66 +115,25 @@
         }
       },
       {
-        "path": "/users/{userId}/birthCharts/{birthChartId}",
+        "path": "/users/{userId}/readings/{readingId}",
         "definition": {
-          "entityName": "BirthChart",
+          "entityName": "Reading",
           "schema": {
-            "$ref": "#/backend/entities/BirthChart"
+            "$ref": "#/backend/entities/Reading"
           },
-          "description": "Stores birth chart data for a specific user. Enforces path-based ownership.",
+          "description": "Stores reading data for a specific user. Enforces path-based ownership.",
           "params": [
             {
               "name": "userId",
               "description": "The unique identifier for the user."
             },
             {
-              "name": "birthChartId",
-              "description": "The unique identifier for the birth chart."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/users/{userId}/palmReadings/{palmReadingId}",
-        "definition": {
-          "entityName": "PalmReading",
-          "schema": {
-            "$ref": "#/backend/entities/PalmReading"
-          },
-          "description": "Stores palm reading data for a specific user. Enforces path-based ownership.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier for the user."
-            },
-            {
-              "name": "palmReadingId",
-              "description": "The unique identifier for the palm reading."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/users/{userId}/vedicReadings/{vedicReadingId}",
-        "definition": {
-          "entityName": "VedicReading",
-          "schema": {
-            "$ref": "#/backend/entities/VedicReading"
-          },
-          "description": "Stores Vedic reading data for a specific user. Enforces path-based ownership.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier for the user."
-            },
-            {
-              "name": "vedicReadingId",
-              "description": "The unique identifier for the vedic reading."
+              "name": "readingId",
+              "description": "The unique identifier for the reading."
             }
           ]
         }
       }
-    ],
-    "reasoning": "The Firestore structure is designed to store user data, birth charts, palm readings, and Vedic readings for the Cosmic Insights application. It prioritizes security and scalability by adhering to the principles of Authorization Independence, Structural Segregation, and Access Modeling. Each user has their own collection of birth charts, palm readings, and Vedic readings, ensuring that data is organized and access can be controlled at the user level. User data is stored separately. This ensures clear ownership and simplifies security rules. Specifically, the structure uses path-based ownership for user-specific data, which allows for simple and efficient security rules based on the `request.auth.uid`. The structure avoids the need for complex `get()` calls in the security rules by using simple path-based rules, ensuring Authorization Independence."
+    ]
   }
 }

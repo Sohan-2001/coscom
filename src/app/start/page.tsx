@@ -7,6 +7,7 @@ import { useUser } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
+import { AppNav } from '@/components/app-nav';
 
 export default function StartPage() {
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-background');
@@ -21,14 +22,16 @@ export default function StartPage() {
 
   if (isUserLoading || !user) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex justify-center items-center min-h-screen bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-accent" />
       </div>
     );
   }
 
   return (
-    <main className="relative min-h-screen w-full overflow-hidden">
+    <>
+    <AppNav />
+    <main className="relative min-h-screen w-full overflow-hidden pt-16">
       {heroImage && (
         <Image
           src={heroImage.imageUrl}
@@ -62,5 +65,6 @@ export default function StartPage() {
         </footer>
       </div>
     </main>
+    </>
   );
 }

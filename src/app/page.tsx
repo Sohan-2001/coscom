@@ -23,7 +23,7 @@ export default function Home() {
 
   if (isUserLoading || user) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex justify-center items-center min-h-screen bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-accent" />
       </div>
     );
@@ -54,11 +54,9 @@ export default function Home() {
         </header>
 
         <div className="mt-12">
-          <Link href="/login" passHref>
-            <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground text-xl px-12 py-8">
-              Let's Start
-            </Button>
-          </Link>
+          <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground text-xl px-12 py-8">
+            <Link href="/login">Let's Start</Link>
+          </Button>
         </div>
 
         <footer className="absolute bottom-0 w-full text-center pb-8">
