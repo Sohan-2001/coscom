@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { useState, useTransition, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { format } from 'date-fns';
-import { CalendarIcon, Loader2, Upload, Star } from 'lucide-react';
+import { CalendarIcon, Loader2, Upload, Star, CheckCircle } from 'lucide-react';
 import { type PersonalizedInsightsOutput } from '@/ai/flows/personalized-insights';
 
 import { Button } from '@/components/ui/button';
@@ -22,16 +22,16 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { Calendar } from '@/components/ui/calendar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { generatePersonalizedInsightsAction, saveReadingAction } from '@/lib/actions';
+import { generatePersonalizedInsightsAction, saveReadingAction, createOrderAction } from '@/lib/actions';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { useUser } from '@/firebase';
+import { useUser, useDoc, useMemoFirebase } from '@/firebase';
+import { doc, getFirestore } from 'firebase/firestore';
 import { RazorpayButton } from './razorpay-button';
-
 
 const formSchema = z.object({
   date: z.date({
@@ -93,7 +93,6 @@ function CalendarWithOkButton({ field }: { field: any }) {
   );
 }
 
-
 export function CosmicForm() {
   const { user } = useUser();
   const [isPending, startTransition] = useTransition();
@@ -102,24 +101,30 @@ export function CosmicForm() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const [order, setOrder] = useState<{ id: string, razorpayOrderId: string } | null>(null);
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
-  const [paymentCompleted, setPaymentCompleted] = useState(false);
+
+  const firestore = getFirestore();
+  const orderRef = useMemoFirebase(() => {
+      if (!user || !order) return null;
+      return doc(firestore, 'users', user.uid, 'orders', order.id);
+  }, [firestore, user, order]);
+
+  const { data: orderData } = useDoc(orderRef);
+
+  const paymentCompleted = orderData?.status === 'completed';
 
   useEffect(() => {
-    const handleRazorpayPayment = (event: any) => {
-        if (event.origin !== 'https://api.razorpay.com') {
-            return;
-        }
-        if (event.data.entity === 'event' && event.data.event === 'payment.captured') {
-            setPaymentCompleted(true);
-        }
-    };
-    window.addEventListener('message', handleRazorpayPayment);
-    return () => {
-        window.removeEventListener('message', handleRazorpayPayment);
-    };
-  }, []);
-
+    if (paymentCompleted) {
+        toast({
+            title: 'Payment Successful!',
+            description: 'Your payment has been verified. Generating your reading now...',
+            className: 'bg-green-500 text-white',
+        });
+        handleGenerateReading();
+    }
+  }, [paymentCompleted]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -143,8 +148,20 @@ export function CosmicForm() {
     }
   };
 
-  function onFormSubmit(values: z.infer<typeof formSchema>) {
-    setShowPaymentDialog(true);
+  async function onFormSubmit(values: z.infer<typeof formSchema>) {
+    if (!user) {
+        toast({ variant: 'destructive', title: 'You must be logged in' });
+        return;
+    }
+    startTransition(async () => {
+        const result = await createOrderAction(user.uid, 100, 'INR');
+        if (result.success && result.orderId && result.razorpayOrderId) {
+            setOrder({ id: result.orderId, razorpayOrderId: result.razorpayOrderId });
+            setShowPaymentDialog(true);
+        } else {
+            toast({ variant: 'destructive', title: 'Could not create order', description: result.error });
+        }
+    });
   }
 
   function handleGenerateReading() {
@@ -310,7 +327,7 @@ export function CosmicForm() {
             </Card>
             
             <Button type="submit" size="lg" className="w-full bg-accent hover:bg-accent/90 text-accent-foreground text-lg" disabled={isPending}>
-              {isPending ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : 'Generate Your Reading'}
+              {isPending ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : 'Generate Your Reading for ₹100'}
             </Button>
           </form>
         </Form>
@@ -321,32 +338,33 @@ export function CosmicForm() {
             <DialogHeader>
                 <DialogTitle>Complete Your Payment</DialogTitle>
                 <DialogDescription>
-                    Please complete the payment to generate your cosmic reading.
+                    Please complete the payment to generate your cosmic reading. Your reading will generate automatically after successful payment.
                 </DialogDescription>
             </DialogHeader>
             
-            {!paymentCompleted ? (
-                <div className="flex justify-center items-center py-8">
-                    <RazorpayButton />
-                </div>
-            ) : (
-                <div className="text-center py-4">
-                    <p className="text-green-500 font-semibold mb-4">Payment Successful!</p>
-                    <p>You can now generate your reading.</p>
+            {orderData?.status === 'pending' && (
+                <div className="flex justify-center items-center py-8 flex-col gap-4">
+                    <RazorpayButton razorpayOrderId={order!.razorpayOrderId} />
+                     <p className="text-sm text-muted-foreground">Waiting for payment confirmation...</p>
+                    <Loader2 className="h-6 w-6 animate-spin" />
                 </div>
             )}
             
+            {paymentCompleted && (
+                <div className="text-center py-4 flex flex-col items-center gap-4">
+                    <CheckCircle className="h-12 w-12 text-green-500" />
+                    <p className="text-green-500 font-semibold">Payment Successful!</p>
+                    <p>Your reading is being generated...</p>
+                </div>
+            )}
+
             <DialogFooter>
                 <DialogClose asChild>
                     <Button variant="outline">Cancel</Button>
                 </DialogClose>
-                <Button onClick={handleGenerateReading} disabled={!paymentCompleted || isPending}>
-                    {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Generate Reading'}
-                </Button>
             </DialogFooter>
         </DialogContent>
       </Dialog>
-
 
       <div className="w-full">
         <Card className="bg-card/80 backdrop-blur-sm border-border/50 min-h-[400px]">
@@ -369,8 +387,10 @@ export function CosmicForm() {
             </div>
           </CardHeader>
           <CardContent>
-            {isPending && (
-              <div className="space-y-4">
+            {isPending && !reading && (
+              <div className="space-y-4 pt-4 flex flex-col items-center">
+                <Loader2 className="h-8 w-8 animate-spin text-accent" />
+                <p className='text-muted-foreground'>Generating your reading... this may take a moment.</p>
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-[80%]" />
@@ -403,4 +423,3 @@ export function CosmicForm() {
     </div>
   );
 }
-
