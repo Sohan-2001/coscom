@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 import { cn } from '@/lib/utils';
+import { FirebaseClientProvider } from '@/firebase';
 
 export const metadata: Metadata = {
   title: 'Cosmic Compass',
@@ -17,7 +18,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <head />
       <body className={cn('font-body antialiased min-h-screen')}>
-        {children}
+        <FirebaseClientProvider>{children}</FirebaseClientProvider>
         <Toaster />
       </body>
     </html>
