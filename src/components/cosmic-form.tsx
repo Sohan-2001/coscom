@@ -237,12 +237,12 @@ export function CosmicForm() {
                 <CardDescription>Enter your birth details to generate your chart.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
                   <FormField
                     control={form.control}
                     name="date"
                     render={({ field }) => (
-                      <FormItem className="flex flex-col">
+                      <FormItem>
                         <FormLabel>Date of Birth</FormLabel>
                         <CalendarWithOkButton field={field} />
                         <FormMessage />
