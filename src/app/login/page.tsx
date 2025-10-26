@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
-import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 
 import { useAuth, useUser } from '@/firebase/provider';
 import { Button } from '@/components/ui/button';
@@ -87,6 +87,36 @@ export default function LoginPage() {
     }
   }
 
+  async function handlePasswordReset() {
+    const email = form.getValues('email');
+    if (!email) {
+      form.trigger('email');
+      toast({
+        variant: 'destructive',
+        title: 'Email Required',
+        description: 'Please enter your email address to reset your password.',
+      });
+      return;
+    }
+    setIsPending(true);
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast({
+        title: 'Password Reset Email Sent',
+        description: 'Check your inbox for a link to reset your password.',
+      });
+    } catch (error: any) {
+      console.error('Password Reset Error:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error Sending Reset Email',
+        description: error.message || 'Could not send password reset email. Please try again.',
+      });
+    } finally {
+      setIsPending(false);
+    }
+  }
+
   if (isUserLoading || user) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -136,7 +166,17 @@ export default function LoginPage() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <div className="flex justify-between items-center">
+                        <FormLabel>Password</FormLabel>
+                        <button
+                          type="button"
+                          onClick={handlePasswordReset}
+                          className="text-xs text-muted-foreground hover:text-foreground underline"
+                          disabled={isPending}
+                        >
+                          Forgot Password?
+                        </button>
+                      </div>
                       <FormControl>
                         <Input type="password" placeholder="••••••••" {...field} className="bg-background/80" />
                       </FormControl>
