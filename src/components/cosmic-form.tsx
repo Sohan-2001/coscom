@@ -154,7 +154,7 @@ export function CosmicForm() {
         return;
     }
     startTransition(async () => {
-        const result = await createOrderAction(user.uid, 100, 'INR');
+        const result = await createOrderAction(user.uid, 11, 'INR');
         if (result.success && result.orderId && result.razorpayOrderId) {
             setOrder({ id: result.orderId, razorpayOrderId: result.razorpayOrderId });
             setShowPaymentDialog(true);
@@ -327,7 +327,7 @@ export function CosmicForm() {
             </Card>
             
             <Button type="submit" size="lg" className="w-full bg-accent hover:bg-accent/90 text-accent-foreground text-lg" disabled={isPending}>
-              {isPending ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : 'Generate Your Reading for ₹100'}
+              {isPending ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : 'Generate Your Reading for ₹11'}
             </Button>
           </form>
         </Form>
@@ -344,7 +344,7 @@ export function CosmicForm() {
             
             {orderData?.status === 'pending' && (
                 <div className="flex justify-center items-center py-8 flex-col gap-4">
-                    <RazorpayButton razorpayOrderId={order!.razorpayOrderId} />
+                    <RazorpayButton razorpayOrderId={order!.razorpayOrderId} amount={11} />
                      <p className="text-sm text-muted-foreground">Waiting for payment confirmation...</p>
                     <Loader2 className="h-6 w-6 animate-spin" />
                 </div>

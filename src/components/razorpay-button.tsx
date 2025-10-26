@@ -11,9 +11,10 @@ declare global {
 
 interface RazorpayButtonProps {
   razorpayOrderId: string;
+  amount: number;
 }
 
-export function RazorpayButton({ razorpayOrderId }: RazorpayButtonProps) {
+export function RazorpayButton({ razorpayOrderId, amount }: RazorpayButtonProps) {
   useEffect(() => {
     const script = document.createElement('script');
     script.src = 'https://checkout.razorpay.com/v1/checkout.js';
@@ -28,7 +29,7 @@ export function RazorpayButton({ razorpayOrderId }: RazorpayButtonProps) {
 
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: "10000", // amount in the smallest currency unit
+        amount: amount * 100, // amount in the smallest currency unit
         currency: "INR",
         name: "Cosmic Compass",
         description: "Personalized Vedic Reading",
@@ -66,7 +67,7 @@ export function RazorpayButton({ razorpayOrderId }: RazorpayButtonProps) {
       document.body.removeChild(script);
     };
 
-  }, [razorpayOrderId]);
+  }, [razorpayOrderId, amount]);
 
 
   return null; // The button is created by the Razorpay script
