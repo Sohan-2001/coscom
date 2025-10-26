@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
-import { GoogleAuthProvider, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, sendPasswordResetEmail, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 
 import { useAuth, useUser } from '@/firebase/provider';
 import { Button } from '@/components/ui/button';
@@ -36,6 +36,7 @@ export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isPending, setIsPending] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-background');
 
   useEffect(() => {
@@ -55,13 +56,17 @@ export default function LoginPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsPending(true);
     try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+      if (isSignUp) {
+        await createUserWithEmailAndPassword(auth, values.email, values.password);
+      } else {
+        await signInWithEmailAndPassword(auth, values.email, values.password);
+      }
       router.push('/start');
     } catch (error: any) {
       console.error(error);
       toast({
         variant: 'destructive',
-        title: 'Login Failed',
+        title: isSignUp ? 'Sign-up Failed' : 'Login Failed',
         description: error.message || 'An unexpected error occurred.',
       });
     } finally {
@@ -142,8 +147,8 @@ export default function LoginPage() {
       <div className="relative z-20 flex flex-col items-center justify-center min-h-screen p-4">
         <Card className="w-full max-w-sm bg-card/80 backdrop-blur-sm border-border/50">
           <CardHeader className="text-center">
-            <CardTitle className="font-headline text-3xl">Welcome Back</CardTitle>
-            <CardDescription>Sign in to continue your cosmic journey</CardDescription>
+            <CardTitle className="font-headline text-3xl">{isSignUp ? 'Create an Account' : 'Welcome Back'}</CardTitle>
+            <CardDescription>{isSignUp ? 'Enter your details to begin your journey' : 'Sign in to continue your cosmic journey'}</CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -168,14 +173,16 @@ export default function LoginPage() {
                     <FormItem>
                       <div className="flex justify-between items-center">
                         <FormLabel>Password</FormLabel>
-                        <button
-                          type="button"
-                          onClick={handlePasswordReset}
-                          className="text-xs text-muted-foreground hover:text-foreground underline"
-                          disabled={isPending}
-                        >
-                          Forgot Password?
-                        </button>
+                        {!isSignUp && (
+                            <button
+                            type="button"
+                            onClick={handlePasswordReset}
+                            className="text-xs text-muted-foreground hover:text-foreground underline"
+                            disabled={isPending}
+                          >
+                            Forgot Password?
+                          </button>
+                        )}
                       </div>
                       <FormControl>
                         <Input type="password" placeholder="••••••••" {...field} className="bg-background/80" />
@@ -186,7 +193,7 @@ export default function LoginPage() {
                 />
                 <Button type="submit" className="w-full" disabled={isPending}>
                   {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Sign In
+                  {isSignUp ? 'Sign Up' : 'Sign In'}
                 </Button>
               </form>
             </Form>
@@ -211,9 +218,29 @@ export default function LoginPage() {
               )}
               Google
             </Button>
+            
+            <div className="mt-4 text-center text-sm">
+                {isSignUp ? (
+                    <>
+                        Already have an account?{' '}
+                        <button onClick={() => setIsSignUp(false)} className="underline" disabled={isPending}>
+                            Sign In
+                        </button>
+                    </>
+                ) : (
+                    <>
+                        Don&apos;t have an account?{' '}
+                        <button onClick={() => setIsSignUp(true)} className="underline" disabled={isPending}>
+                            Sign Up
+                        </button>
+                    </>
+                )}
+            </div>
           </CardContent>
         </Card>
       </div>
     </main>
   );
 }
+
+    
