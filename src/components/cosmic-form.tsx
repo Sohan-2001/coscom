@@ -4,7 +4,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { useState, useTransition, useRef } from 'react';
+import { useState, useTransition, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { format } from 'date-fns';
 import { CalendarIcon, Loader2, Upload, Star } from 'lucide-react';
@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { Calendar } from '@/components/ui/calendar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
@@ -30,6 +30,8 @@ import { cn } from '@/lib/utils';
 import { generatePersonalizedInsightsAction, saveReadingAction } from '@/lib/actions';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useUser } from '@/firebase';
+import { RazorpayButton } from './razorpay-button';
+
 
 const formSchema = z.object({
   date: z.date({
@@ -100,6 +102,24 @@ export function CosmicForm() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+  const [paymentCompleted, setPaymentCompleted] = useState(false);
+
+  useEffect(() => {
+    const handleRazorpayPayment = (event: any) => {
+        if (event.origin !== 'https://api.razorpay.com') {
+            return;
+        }
+        if (event.data.entity === 'event' && event.data.event === 'payment.captured') {
+            setPaymentCompleted(true);
+        }
+    };
+    window.addEventListener('message', handleRazorpayPayment);
+    return () => {
+        window.removeEventListener('message', handleRazorpayPayment);
+    };
+  }, []);
+
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -123,8 +143,14 @@ export function CosmicForm() {
     }
   };
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onFormSubmit(values: z.infer<typeof formSchema>) {
+    setShowPaymentDialog(true);
+  }
+
+  function handleGenerateReading() {
+    const values = form.getValues();
     setReading(null);
+    setShowPaymentDialog(false);
     startTransition(async () => {
       const result = await generatePersonalizedInsightsAction({
         astrologicalChart: {
@@ -187,7 +213,7 @@ export function CosmicForm() {
     <div className="w-full max-w-4xl mx-auto flex flex-col items-center gap-8 p-4">
       <div className="w-full">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onFormSubmit)} className="space-y-8">
             <Card className="bg-card/80 backdrop-blur-sm border-border/50">
               <CardHeader>
                 <CardTitle className="font-headline text-3xl">Your Celestial Blueprint</CardTitle>
@@ -290,6 +316,38 @@ export function CosmicForm() {
         </Form>
       </div>
 
+      <Dialog open={showPaymentDialog} onOpenChange={setShowPaymentDialog}>
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle>Complete Your Payment</DialogTitle>
+                <DialogDescription>
+                    Please complete the payment to generate your cosmic reading.
+                </DialogDescription>
+            </DialogHeader>
+            
+            {!paymentCompleted ? (
+                <div className="flex justify-center items-center py-8">
+                    <RazorpayButton />
+                </div>
+            ) : (
+                <div className="text-center py-4">
+                    <p className="text-green-500 font-semibold mb-4">Payment Successful!</p>
+                    <p>You can now generate your reading.</p>
+                </div>
+            )}
+            
+            <DialogFooter>
+                <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                </DialogClose>
+                <Button onClick={handleGenerateReading} disabled={!paymentCompleted || isPending}>
+                    {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Generate Reading'}
+                </Button>
+            </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+
       <div className="w-full">
         <Card className="bg-card/80 backdrop-blur-sm border-border/50 min-h-[400px]">
           <CardHeader>
@@ -345,3 +403,4 @@ export function CosmicForm() {
     </div>
   );
 }
+
