@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { useState, useTransition, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { format } from 'date-fns';
-import { CalendarIcon, Loader2, Upload, Star, CheckCircle } from 'lucide-react';
+import { CalendarIcon, Loader2, Upload, Star, CheckCircle, Clock } from 'lucide-react';
 import { type PersonalizedInsightsOutput } from '@/ai/flows/personalized-insights';
 
 import { Button } from '@/components/ui/button';
@@ -92,6 +92,52 @@ function CalendarWithOkButton({ field }: { field: any }) {
     </Dialog>
   );
 }
+
+
+function TimePickerWithOkButton({ field }: { field: any }) {
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedTime, setSelectedTime] = useState<string>(field.value);
+  
+    const handleOkClick = () => {
+      field.onChange(selectedTime);
+      setIsOpen(false);
+    };
+  
+    return (
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger asChild>
+          <FormControl>
+            <Button
+              variant={'outline'}
+              className={cn(
+                'w-full pl-3 text-left font-normal bg-background/80',
+                !field.value && 'text-muted-foreground'
+              )}
+            >
+              {field.value ? field.value : <span>Pick a time</span>}
+              <Clock className="ml-auto h-4 w-4 opacity-50" />
+            </Button>
+          </FormControl>
+        </DialogTrigger>
+        <DialogContent className="w-auto p-4">
+          <DialogHeader>
+            <DialogTitle>Select Time of Birth</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <Input
+              type="time"
+              value={selectedTime}
+              onChange={(e) => setSelectedTime(e.target.value)}
+              className="bg-background/80"
+            />
+          </div>
+          <DialogFooter>
+            <Button onClick={handleOkClick} size="sm">OK</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
 export function CosmicForm() {
   const { user } = useUser();
@@ -255,9 +301,7 @@ export function CosmicForm() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Time of Birth</FormLabel>
-                        <FormControl>
-                          <Input type="time" {...field} className="bg-background/80" />
-                        </FormControl>
+                        <TimePickerWithOkButton field={field} />
                         <FormMessage />
                       </FormItem>
                     )}
