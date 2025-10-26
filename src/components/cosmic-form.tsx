@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { Calendar } from '@/components/ui/calendar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
@@ -142,7 +142,6 @@ function TimePickerWithOkButton({ field }: { field: any }) {
 export function CosmicForm() {
   const { user } = useUser();
   const [isPending, startTransition] = useTransition();
-  const [isSaving, startSavingTransition] = useTransition();
   const [reading, setReading] = useState<PersonalizedInsightsOutput | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { toast } = useToast();
@@ -160,17 +159,6 @@ export function CosmicForm() {
   const { data: orderData } = useDoc(orderRef);
 
   const paymentCompleted = orderData?.status === 'completed';
-
-  useEffect(() => {
-    if (paymentCompleted) {
-        toast({
-            title: 'Payment Successful!',
-            description: 'Your payment has been verified. Generating your reading now...',
-            className: 'bg-green-500 text-white',
-        });
-        handleGenerateReading();
-    }
-  }, [paymentCompleted]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -210,7 +198,8 @@ export function CosmicForm() {
     });
   }
 
-  function handleGenerateReading() {
+  const handleGenerateReading = () => {
+    if (!user) return;
     const values = form.getValues();
     setReading(null);
     setShowPaymentDialog(false);
@@ -226,8 +215,25 @@ export function CosmicForm() {
         },
       });
 
-      if (result.success) {
-        setReading(result.data ?? null);
+      if (result.success && result.data) {
+        setReading(result.data);
+        const saveResult = await saveReadingAction(user.uid, result.data, {
+          date: values.date,
+          time: values.time,
+          location: values.location
+        });
+        if (saveResult.success) {
+          toast({
+            title: 'Reading Saved!',
+            description: 'Your cosmic insights have been saved to your history.',
+          });
+        } else {
+          toast({
+            variant: 'destructive',
+            title: 'Failed to Save Reading',
+            description: saveResult.error,
+          });
+        }
       } else {
         toast({
           variant: 'destructive',
@@ -238,29 +244,18 @@ export function CosmicForm() {
     });
   }
 
-  const handleSaveReading = () => {
-    if (!reading || !user) return;
-    const values = form.getValues();
-    startSavingTransition(async () => {
-      const result = await saveReadingAction(user.uid, reading, {
-        date: values.date,
-        time: values.time,
-        location: values.location
-      });
-      if (result.success) {
+  useEffect(() => {
+    if (paymentCompleted) {
         toast({
-          title: 'Reading Saved!',
-          description: 'Your cosmic insights have been saved to your profile.',
+            title: 'Payment Successful!',
+            description: 'Your payment has been verified. Generating your reading now...',
+            className: 'bg-green-500 text-white',
         });
-      } else {
-        toast({
-          variant: 'destructive',
-          title: 'Failed to Save',
-          description: result.error,
-        });
-      }
-    });
-  };
+        handleGenerateReading();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paymentCompleted]);
+
 
   const readingSections = reading ? [
     { title: 'Foundational Overview', content: reading.foundationalOverview },
@@ -418,16 +413,6 @@ export function CosmicForm() {
                 <CardTitle className="font-headline text-3xl">Your Cosmic Reading</CardTitle>
                 <CardDescription>Insights woven from the stars and your palm.</CardDescription>
               </div>
-              {reading && !isPending && (
-                <Button onClick={handleSaveReading} disabled={isSaving}>
-                  {isSaving ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <Star className="mr-2 h-4 w-4" />
-                  )}
-                  Save Reading
-                </Button>
-              )}
             </div>
           </CardHeader>
           <CardContent>

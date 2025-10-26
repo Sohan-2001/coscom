@@ -36,8 +36,8 @@ export function AppNav() {
             </Link>
           </div>
           <div className="flex items-center gap-4">
-             <Link href="/profile" passHref>
-                <Button variant="ghost">Profile</Button>
+             <Link href="/history" passHref>
+                <Button variant="ghost">History</Button>
             </Link>
             {isUserLoading ? (
               <Loader2 className="h-6 w-6 animate-spin text-accent" />
