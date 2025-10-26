@@ -1,10 +1,31 @@
 
+'use client';
 import Image from 'next/image';
 import { CosmicForm } from '@/components/cosmic-form';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useUser } from '@/firebase';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
 
 export default function StartPage() {
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-background');
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.replace('/login');
+    }
+  }, [user, isUserLoading, router]);
+
+  if (isUserLoading || !user) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 className="h-16 w-16 animate-spin text-accent" />
+      </div>
+    );
+  }
 
   return (
     <main className="relative min-h-screen w-full overflow-hidden">

@@ -6,10 +6,28 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useUser } from '@/firebase';
+import { useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-background');
   const router = useRouter();
+  const { user, isUserLoading } = useUser();
+
+  useEffect(() => {
+    if (!isUserLoading && user) {
+      router.replace('/start');
+    }
+  }, [user, isUserLoading, router]);
+
+  if (isUserLoading || user) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 className="h-16 w-16 animate-spin text-accent" />
+      </div>
+    );
+  }
 
   return (
     <main className="relative min-h-screen w-full overflow-hidden">
@@ -36,7 +54,7 @@ export default function Home() {
         </header>
 
         <div className="mt-12">
-          <Link href="/start" passHref>
+          <Link href="/login" passHref>
             <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground text-xl px-12 py-8">
               Let's Start
             </Button>
