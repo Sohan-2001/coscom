@@ -107,6 +107,9 @@ export function DestinyReading() {
             userId: user.uid,
             date: serverTimestamp(),
             content: result.data.reading,
+            birthDate: values.birthDate,
+            birthTime: values.birthTime,
+            zodiacSign: values.zodiacSign,
           });
         } catch (error) {
           console.error("Error saving reading:", error);
