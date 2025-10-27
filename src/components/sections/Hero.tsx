@@ -21,10 +21,10 @@ export function Hero() {
       )}
       <div className="absolute inset-0 bg-background/70" />
       <div className="relative z-10 max-w-4xl px-4">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-headline font-bold tracking-tight text-white whitespace-nowrap">
+        <h1 className="text-2xl sm:text-4xl md:text-5xl font-headline font-bold tracking-tight text-white whitespace-nowrap">
           Discover Your Cosmic Blueprint
         </h1>
-        <p className="mt-6 text-base sm:text-lg leading-8 text-gray-300 font-body max-w-2xl mx-auto">
+        <p className="mt-6 text-sm sm:text-lg leading-8 text-gray-300 font-body max-w-2xl mx-auto">
           Unveil the secrets of the stars with personalized horoscopes,
           compatibility checks, and birth chart overviews. Your journey into
           astrology starts here.
