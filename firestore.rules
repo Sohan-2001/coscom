@@ -1,31 +1,7 @@
-/**
- * @file Cosmic Insights Firestore Security Rules
- *
- * @core Philosophy: This ruleset enforces a strict user-ownership model for user profiles and horoscopes,
- * ensuring that only authenticated users can access their own data. Compatibility data is publicly readable.
- *
- * @data Structure:
- * - /users/{userId}: Stores user profiles, accessible only to the owning user.
- * - /users/{userId}/horoscopes/{horoscopeId}: Stores horoscopes, accessible only to the owning user.
- * - /compatibility/{compatibilityId}: Stores zodiac compatibility data, publicly readable.
- *
- * @key Security Decisions:
- * - User listing is implicitly denied by the rules structure.
- * - All write operations on user-owned data require authentication and ownership validation.
- * - Data required for authorization (userId) is embedded within the Horoscope documents in
- *   addition to being part of the path for simpler, more performant rules.
- */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    /**
-     * @description: Allows users to read and write their own user profile.
-     * @path: /users/{userId}
-     * @allow: User with UID 'user123' can (get, create, update, delete) the document /users/user123.
-     * @deny: User with UID 'user456' cannot (get, create, update, delete) the document /users/user123.
-     * @principle: Enforces document ownership for all operations.
-     */
     match /users/{userId} {
       function isSignedIn() {
         return request.auth != null;
@@ -36,56 +12,39 @@ service cloud.firestore {
       }
 
       function isExistingOwner(userId) {
-        return isOwner(userId) && resource.data != null;
+        return isOwner(userId) && resource != null;
       }
 
       allow get: if isOwner(userId);
       allow list: if false;
       allow create: if isSignedIn() && isOwner(userId);
-      allow update: if isExistingOwner(userId) && isOwner(userId);
-      allow delete: if isExistingOwner(userId) && isOwner(userId);
+      allow update: if isExistingOwner(userId);
+      allow delete: if isExistingOwner(userId);
     }
 
-    /**
-     * @description: Allows users to read and write their own horoscopes.
-     * @path: /users/{userId}/horoscopes/{horoscopeId}
-     * @allow: User with UID 'user123' can (get, create, update, delete) the document /users/user123/horoscopes/horoscope456.
-     * @deny: User with UID 'user456' cannot (get, create, update, delete) the document /users/user123/horoscopes/horoscope456.
-     * @principle: Enforces document ownership for all operations.
-     */
     match /users/{userId}/horoscopes/{horoscopeId} {
-        function isSignedIn() {
-          return request.auth != null;
-        }
+      function isSignedIn() {
+        return request.auth != null;
+      }
 
-        function isOwner(userId) {
-          return request.auth.uid == userId;
-        }
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
 
-        function isExistingOwner(userId) {
-          return isOwner(userId) && resource.data != null;
-        }
+       function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
 
       allow get: if isOwner(userId);
-      allow list: if false;
+      allow list: if isOwner(userId);
       allow create: if isSignedIn() && isOwner(userId);
-      allow update: if isExistingOwner(userId) && isOwner(userId);
-      allow delete: if isExistingOwner(userId) && isOwner(userId);
+      allow update: if isExistingOwner(userId);
+      allow delete: if isExistingOwner(userId);
     }
 
-    /**
-     * @description: Allows anyone to read compatibility data.
-     * @path: /compatibility/{compatibilityId}
-     * @allow: Any user can (get, list) the document /compatibility/compat123.
-     * @deny: Only authenticated user can (create, update, delete) the document /compatibility/compat123.
-     * @principle: Grants public read access while restricting write access.
-     */
     match /compatibility/{compatibilityId} {
-      allow get: if true;
-      allow list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+      allow get, list: if true;
+      allow create, update, delete: if false;
     }
   }
 }
