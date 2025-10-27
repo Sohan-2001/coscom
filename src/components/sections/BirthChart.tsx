@@ -22,7 +22,7 @@ export function BirthChart() {
   const [planetPositions, setPlanetPositions] = useState<PlanetPosition[]>([]);
   const { user } = useUser();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [chartSize, setChartSize] = useState(400);
+  const [chartSize, setChartSize] = useState(300);
 
   useEffect(() => {
     function handleResize() {
@@ -30,7 +30,7 @@ export function BirthChart() {
         const containerWidth = containerRef.current.offsetWidth;
         const padding = 32; // Corresponds to p-4 on container
         const size = Math.min(containerWidth - padding, 400);
-        setChartSize(size);
+        setChartSize(size < 300 ? 300 : size);
       }
     }
     handleResize();
@@ -58,23 +58,23 @@ export function BirthChart() {
 
   const center = chartSize / 2;
   const zodiacRadius = chartSize / 2 - 20;
-  const planetRadius = chartSize / 2 - 70;
+  const planetRadius = chartSize / 2 - 60;
 
   return (
     <section id="birth-chart" className="py-16 sm:py-24 bg-background">
       <div className="container max-w-4xl" ref={containerRef}>
         <div className="text-center">
-          <h2 className="text-2xl font-headline font-bold text-white sm:text-3xl">
+          <h2 className="text-xl sm:text-2xl font-headline font-bold text-white md:text-3xl">
             Your Birth Chart
           </h2>
-          <p className="mt-4 text-base text-gray-300 sm:text-lg">
+          <p className="mt-4 text-sm sm:text-base text-gray-300 md:text-lg">
             A snapshot of the heavens at your moment of birth. Enter your birth
             date for a simplified overview.
           </p>
         </div>
 
         <Card className="mt-10 bg-card/50">
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             <form
               onSubmit={handleSubmit}
               className="flex flex-col sm:flex-row items-end gap-4"
@@ -91,7 +91,7 @@ export function BirthChart() {
                   disabled={!user}
                 />
               </div>
-              <Button type="submit" disabled={!user}>
+              <Button type="submit" disabled={!user} className="w-full sm:w-auto">
                 {!user && <Lock className="mr-2 h-4 w-4" />}
                 {user ? 'Generate Chart' : 'Login to Generate'}
               </Button>
@@ -106,7 +106,7 @@ export function BirthChart() {
               style={{ width: chartSize, height: chartSize }}
             >
               <div className="absolute inset-0 border-2 border-primary/50 rounded-full" />
-              <div className="absolute inset-[40px] border border-primary/30 rounded-full" />
+              <div className="absolute inset-[30px] sm:inset-[40px] border border-primary/30 rounded-full" />
               <div className="absolute top-1/2 left-0 w-full h-[1px] bg-primary/30 -translate-y-1/2" />
               <div className="absolute left-1/2 top-0 h-full w-[1px] bg-primary/30 -translate-x-1/2" />
 
@@ -128,7 +128,7 @@ export function BirthChart() {
                       transform: 'translate(-50%, -50%)',
                     }}
                   >
-                    <Icon className="w-8 h-8 text-primary" />
+                    <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
                   </div>
                 );
               })}
@@ -136,7 +136,7 @@ export function BirthChart() {
               {planetPositions.map(({ planet, angle }) => {
                 const adjustedAngle = angle - 90;
                 // Vary radius for visual interest
-                const radius = planetRadius - (planet.name.length % 5) * 15;
+                const radius = planetRadius - (planet.name.length % 5) * 10;
                 const x =
                   center + radius * Math.cos((adjustedAngle * Math.PI) / 180);
                 const y =
@@ -152,7 +152,7 @@ export function BirthChart() {
                       transform: 'translate(-50%, -50%)',
                     }}
                   >
-                    <Icon className="w-6 h-6 text-accent-foreground" />
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-accent-foreground" />
                   </div>
                 );
               })}

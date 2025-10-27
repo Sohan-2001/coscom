@@ -98,20 +98,20 @@ export function PersonalizedHoroscope() {
     <section id="horoscope" className="py-16 sm:py-24 bg-background">
       <div className="container max-w-4xl">
         <div className="text-center">
-          <h2 className="text-2xl font-headline font-bold text-white sm:text-3xl">
+          <h2 className="text-xl sm:text-2xl font-headline font-bold text-white md:text-3xl">
             Your Daily Cosmic Forecast
           </h2>
-          <p className="mt-4 text-base text-gray-300 sm:text-lg">
+          <p className="mt-4 text-sm sm:text-base text-gray-300 md:text-lg">
             Enter your birth details to generate a personalized horoscope for
             today, crafted by our AI astrologer.
           </p>
         </div>
         <Card className="mt-10 bg-card/50">
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="grid grid-cols-1 md:grid-cols-3 gap-6"
+                className="grid grid-cols-1 md:grid-cols-3 gap-4"
               >
                 <FormField
                   control={form.control}
@@ -167,8 +167,8 @@ export function PersonalizedHoroscope() {
                     </FormItem>
                   )}
                 />
-                <div className="md:col-span-3 text-center pt-4">
-                  <Button type="submit" disabled={isLoading || !user} size="lg">
+                <div className="md:col-span-3 text-center pt-2">
+                  <Button type="submit" disabled={isLoading || !user} className="w-full sm:w-auto" size="default">
                     {isLoading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />{' '}

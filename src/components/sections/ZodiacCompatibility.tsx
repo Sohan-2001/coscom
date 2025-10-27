@@ -44,18 +44,18 @@ export function ZodiacCompatibility() {
     <section id="compatibility" className="py-16 sm:py-24 bg-secondary/20">
       <div className="container max-w-4xl">
         <div className="text-center">
-          <h2 className="text-2xl font-headline font-bold text-white sm:text-3xl">
+          <h2 className="text-xl sm:text-2xl font-headline font-bold text-white md:text-3xl">
             Zodiac Compatibility
           </h2>
-          <p className="mt-4 text-base text-gray-300 sm:text-lg">
+          <p className="mt-4 text-sm sm:text-base text-gray-300 md:text-lg">
             Curious about your connection with someone? Select two zodiac signs
             to reveal your cosmic synergy.
           </p>
         </div>
 
         <Card className="mt-10 bg-card/50">
-          <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+          <CardContent className="p-4 sm:p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Your Sign</label>
                 <Select
@@ -97,7 +97,7 @@ export function ZodiacCompatibility() {
               <Button
                 onClick={checkCompatibility}
                 disabled={!sign1 || !sign2 || !user}
-                className="w-full mt-4 md:mt-0"
+                className="w-full mt-2 md:mt-0"
               >
                 {!user && <Lock className="mr-2 h-4 w-4" />}
                 {user ? 'Check Compatibility' : 'Login to Check'}
@@ -110,11 +110,11 @@ export function ZodiacCompatibility() {
           <Card className="mt-8 animate-fade-in bg-card/50">
             <CardHeader className="text-center">
               <div className="flex justify-center items-center gap-4">
-                {Icon1 && <Icon1 className="w-16 h-16 text-primary" />}
-                <Heart className="w-8 h-8 text-red-400" />
-                {Icon2 && <Icon2 className="w-16 h-16 text-primary" />}
+                {Icon1 && <Icon1 className="w-12 h-12 sm:w-16 sm:h-16 text-primary" />}
+                <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-red-400" />
+                {Icon2 && <Icon2 className="w-12 h-12 sm:w-16 sm:h-16 text-primary" />}
               </div>
-              <CardTitle className="mt-4">
+              <CardTitle className="mt-4 text-xl sm:text-2xl">
                 {sign1} & {sign2}
               </CardTitle>
               <CardDescription>
@@ -125,7 +125,7 @@ export function ZodiacCompatibility() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-center font-body text-base text-gray-300">
+              <p className="text-center font-body text-sm sm:text-base text-gray-300">
                 {compatibility.text}
               </p>
             </CardContent>
