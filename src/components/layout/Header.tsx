@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Sparkles } from 'lucide-react';
+import { UserNav } from '@/components/layout/UserNav';
 
 export function Header() {
   return (
@@ -13,7 +14,7 @@ export function Header() {
             Cosmic Insights
           </span>
         </Link>
-        <nav className="flex items-center gap-6 text-sm">
+        <nav className="flex items-center gap-6 text-sm flex-1">
           <Link
             href="#horoscope"
             className="transition-colors hover:text-primary"
@@ -33,6 +34,7 @@ export function Header() {
             Birth Chart
           </Link>
         </nav>
+        <UserNav />
       </div>
     </header>
   );

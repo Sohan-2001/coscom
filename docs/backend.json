@@ -40,9 +40,7 @@
       "required": [
         "id",
         "googleId",
-        "email",
-        "birthDate",
-        "birthTime"
+        "email"
       ]
     },
     "Horoscope": {
@@ -109,8 +107,7 @@
   },
   "auth": {
     "providers": [
-      "password",
-      "anonymous"
+      "google.com"
     ]
   },
   "firestore": {
