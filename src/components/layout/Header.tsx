@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Sparkles, Menu } from 'lucide-react';
 import { UserNav } from '@/components/layout/UserNav';
 import { useUser } from '@/firebase';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 
@@ -47,6 +47,9 @@ export function Header() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left">
+                <SheetHeader>
+                  <SheetTitle className="sr-only">Menu</SheetTitle>
+                </SheetHeader>
                 <div className="flex flex-col gap-6 pt-10">
                   <Link href="/" className="flex items-center space-x-2" onClick={closeSheet}>
                     <Sparkles className="h-6 w-6 text-primary" />
