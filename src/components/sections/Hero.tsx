@@ -20,7 +20,7 @@ export function Hero() {
       )}
       <div className="absolute inset-0 bg-background/70" />
       <div className="relative z-10 max-w-4xl px-4">
-        <h1 className="text-4xl font-headline font-bold tracking-tight text-white sm:text-6xl lg:text-7xl">
+        <h1 className="text-4xl font-headline font-bold tracking-tight text-white sm:text-6xl lg:text-7xl whitespace-nowrap">
           Discover Your Cosmic Blueprint
         </h1>
         <p className="mt-6 text-lg leading-8 text-gray-300 font-body max-w-2xl mx-auto">
