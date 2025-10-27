@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -18,7 +19,7 @@ const DestinyReadingInputSchema = z.object({
   birthTime: z
     .string()
     .describe("The user's birth time in HH:mm format (24-hour clock)."),
-  zodiacSign: z.string().describe('The zodiac sign of the user.'),
+  birthPlace: z.string().describe("The user's place of birth (e.g., city, country)."),
   palmPhotoDataUri: z
     .string()
     .describe(
@@ -43,9 +44,8 @@ const prompt = ai.definePrompt({
   name: 'destinyReadingPrompt',
   input: {schema: DestinyReadingInputSchema},
   output: {schema: DestinyReadingOutputSchema},
-  prompt: `Analyze the individual’s destiny and life path using a combined approach of Vedic Astrology (based on birth chart interpretation from birth date {{birthDate}} and time {{birthTime}}) and Palmistry (based on hand features and line analysis from the provided image). Provide a comprehensive, step-by-step integrated reading that blends astrological and palm-based insights into one cohesive narrative.
+  prompt: `Analyze the individual’s destiny and life path using a combined approach of Vedic Astrology (based on birth chart interpretation from birth date {{birthDate}}, time {{birthTime}}, and place {{birthPlace}}) and Palmistry (based on hand features and line analysis from the provided image). Provide a comprehensive, step-by-step integrated reading that blends astrological and palm-based insights into one cohesive narrative.
 
-The user's zodiac sign is {{zodiacSign}}.
 The user's palm photo is attached: {{media url=palmPhotoDataUri}}
 
 Include approximate timelines (ages, decades, or planetary dasha periods) for major life events, transitions, or turning points wherever applicable.

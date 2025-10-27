@@ -17,13 +17,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
   Card,
   CardContent,
   CardDescription,
@@ -31,7 +24,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Loader2, Wand2, Lock, Upload } from 'lucide-react';
-import { ZODIAC_SIGNS } from '@/data/zodiac';
 import type { DestinyReadingOutput } from '@/ai/flows/destiny-reading-flow';
 import { useToast } from '@/hooks/use-toast';
 import { useFirestore, useUser } from '@/firebase';
@@ -41,7 +33,7 @@ import Image from 'next/image';
 const formSchema = z.object({
   birthDate: z.string().min(1, 'Birth date is required.'),
   birthTime: z.string().min(1, 'Birth time is required.'),
-  zodiacSign: z.string().min(1, 'Zodiac sign is required.'),
+  birthPlace: z.string().min(1, 'Birth place is required.'),
   palmPhoto: z.any().refine(fileList => fileList.length > 0, 'Palm photo is required.'),
 });
 
@@ -58,7 +50,7 @@ export function DestinyReading() {
     defaultValues: {
       birthDate: '',
       birthTime: '',
-      zodiacSign: '',
+      birthPlace: '',
       palmPhoto: undefined,
     },
   });
@@ -93,7 +85,7 @@ export function DestinyReading() {
     const result = await generateDestinyReading({
         birthDate: values.birthDate,
         birthTime: values.birthTime,
-        zodiacSign: values.zodiacSign,
+        birthPlace: values.birthPlace,
         palmPhotoDataUri,
     });
 
@@ -109,7 +101,7 @@ export function DestinyReading() {
             content: result.data.reading,
             birthDate: values.birthDate,
             birthTime: values.birthTime,
-            zodiacSign: values.zodiacSign,
+            birthPlace: values.birthPlace,
           });
         } catch (error) {
           console.error("Error saving reading:", error);
@@ -175,28 +167,13 @@ export function DestinyReading() {
                 />
                 <FormField
                   control={form.control}
-                  name="zodiacSign"
+                  name="birthPlace"
                   render={({ field }) => (
                     <FormItem className="md:col-span-2">
-                      <FormLabel className="text-xs sm:text-sm">Zodiac Sign</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        disabled={!user}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="text-xs sm:text-sm">
-                            <SelectValue placeholder="Select your sign" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {ZODIAC_SIGNS.map((sign) => (
-                            <SelectItem key={sign.name} value={sign.name}>
-                              {sign.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <FormLabel className="text-xs sm:text-sm">Birth Place</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. London, UK" {...field} disabled={!user} className="text-xs sm:text-sm" />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
