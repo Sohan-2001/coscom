@@ -1,0 +1,173 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the Cosmic Insights application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user entity."
+        },
+        "googleId": {
+          "type": "string",
+          "description": "The user's Google ID obtained from Google OAuth."
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address.",
+          "format": "email"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "User's first name."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "User's last name."
+        },
+        "birthDate": {
+          "type": "string",
+          "description": "User's birth date.",
+          "format": "date-time"
+        },
+        "birthTime": {
+          "type": "string",
+          "description": "User's birth time."
+        }
+      },
+      "required": [
+        "id",
+        "googleId",
+        "email",
+        "birthDate",
+        "birthTime"
+      ]
+    },
+    "Horoscope": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Horoscope",
+      "type": "object",
+      "description": "Represents a user's daily horoscope.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the horoscope entry."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Horoscope)"
+        },
+        "date": {
+          "type": "string",
+          "description": "The date for which the horoscope is generated.",
+          "format": "date-time"
+        },
+        "content": {
+          "type": "string",
+          "description": "The generated horoscope content."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "date",
+        "content"
+      ]
+    },
+    "Compatibility": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Compatibility",
+      "type": "object",
+      "description": "Represents the compatibility between two zodiac signs.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the compatibility entry."
+        },
+        "sign1": {
+          "type": "string",
+          "description": "The first zodiac sign."
+        },
+        "sign2": {
+          "type": "string",
+          "description": "The second zodiac sign."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the compatibility between the two signs."
+        }
+      },
+      "required": [
+        "id",
+        "sign1",
+        "sign2",
+        "description"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profiles. Secured by path-based rules. Only the authenticated user can read/write their own profile.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/horoscopes/{horoscopeId}",
+        "definition": {
+          "entityName": "Horoscope",
+          "schema": {
+            "$ref": "#/backend/entities/Horoscope"
+          },
+          "description": "Stores horoscopes specific to each user. Secured by path-based rules. Includes denormalized 'userId' for data integrity, although the path also enforces ownership.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "horoscopeId",
+              "description": "The unique identifier of the horoscope entry."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/compatibility/{compatibilityId}",
+        "definition": {
+          "entityName": "Compatibility",
+          "schema": {
+            "$ref": "#/backend/entities/Compatibility"
+          },
+          "description": "Stores compatibility information between zodiac signs. This data is globally readable.",
+          "params": [
+            {
+              "name": "compatibilityId",
+              "description": "The unique identifier for the compatibility entry."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to ensure security, scalability, and debuggability, adhering to the principles of Authorization Independence, Clarity of Intent, DBAC, and QAPs. It uses path-based ownership for user data and denormalization to avoid `get()` calls in security rules.\n\n1.  **Users Collection:** The `/users/{userId}` collection stores user profiles. This private data is secured using path-based rules. Only the authenticated user can read/write their own profile.\n2.  **Horoscopes Subcollection:** The `/users/{userId}/horoscopes/{horoscopeId}` subcollection stores horoscopes specific to each user.  This leverages path-based ownership to secure access.  Each document includes the `userId` field, which is redundant given the path structure, but reinforces data integrity.\n3.  **Compatibility Collection:** The `/compatibility/{compatibilityId}` collection stores compatibility information between zodiac signs. This data is globally readable.\n\n**Authorization Independence:** The structure eliminates the need for `get()` calls in security rules by using path-based ownership, especially in the `users` and `horoscopes` collections.  This allows for atomic operations and easier debugging.\n\n**QAPs:** The design supports secure `list` operations by segregating data with different access needs into separate collections.  The `/users/{userId}` and `/users/{userId}/horoscopes` collections are secured by path-based ownership, allowing secure `list` operations constrained to the requesting user. The `/compatibility` collection is globally readable, so listing is also not a security concern."
+  }
+}
