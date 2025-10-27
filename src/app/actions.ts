@@ -1,21 +1,19 @@
 'use server';
 
 import {
-  personalizedDailyHoroscope,
-  type PersonalizedDailyHoroscopeInput,
-} from '@/ai/flows/personalized-daily-horoscope';
+  getDestinyReading,
+  type DestinyReadingInput,
+} from '@/ai/flows/destiny-reading-flow';
 
-export async function getPersonalizedHoroscope(
-  input: PersonalizedDailyHoroscopeInput
-) {
+export async function generateDestinyReading(input: DestinyReadingInput) {
   try {
-    const result = await personalizedDailyHoroscope(input);
+    const result = await getDestinyReading(input);
     return { success: true, data: result };
   } catch (error) {
     console.error(error);
     return {
       success: false,
-      error: 'Failed to generate horoscope. Please try again.',
+      error: 'Failed to generate destiny reading. Please try again.',
     };
   }
 }

@@ -25,24 +25,6 @@ export function Header() {
           </span>
         </Link>
         <nav className="hidden md:flex items-center gap-6 text-sm flex-1">
-          <Link
-            href="/#horoscope"
-            className="transition-colors hover:text-primary"
-          >
-            Personalized Horoscope
-          </Link>
-          <Link
-            href="/#compatibility"
-            className="transition-colors hover:text-primary"
-          >
-            Compatibility
-          </Link>
-          <Link
-            href="/#birth-chart"
-            className="transition-colors hover:text-primary"
-          >
-            Birth Chart
-          </Link>
           {user && (
             <Link
               href="/history"
@@ -65,15 +47,6 @@ export function Header() {
                 <Link href="/" className="flex items-center space-x-2" onClick={closeSheet}>
                   <Sparkles className="h-6 w-6 text-primary" />
                   <span className="font-bold">Cosmic Insights</span>
-                </Link>
-                <Link href="/#horoscope" className="text-muted-foreground hover:text-primary" onClick={closeSheet}>
-                  Personalized Horoscope
-                </Link>
-                <Link href="/#compatibility" className="text-muted-foreground hover:text-primary" onClick={closeSheet}>
-                  Compatibility
-                </Link>
-                <Link href="/#birth-chart" className="text-muted-foreground hover:text-primary" onClick={closeSheet}>
-                  Birth Chart
                 </Link>
                 {user && (
                   <Link href="/history" className="text-muted-foreground hover:text-primary" onClick={closeSheet}>

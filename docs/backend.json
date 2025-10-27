@@ -43,28 +43,28 @@
         "email"
       ]
     },
-    "Horoscope": {
+    "DestinyReading": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Horoscope",
+      "title": "DestinyReading",
       "type": "object",
-      "description": "Represents a user's daily horoscope.",
+      "description": "Represents a user's destiny reading.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the horoscope entry."
+          "description": "Unique identifier for the reading entry."
         },
         "userId": {
           "type": "string",
-          "description": "Reference to User. (Relationship: User 1:N Horoscope)"
+          "description": "Reference to User. (Relationship: User 1:N DestinyReading)"
         },
         "date": {
           "type": "string",
-          "description": "The date for which the horoscope is generated.",
+          "description": "The date for which the reading is generated.",
           "format": "date-time"
         },
         "content": {
           "type": "string",
-          "description": "The generated horoscope content."
+          "description": "The generated reading content."
         }
       },
       "required": [
@@ -72,36 +72,6 @@
         "userId",
         "date",
         "content"
-      ]
-    },
-    "Compatibility": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Compatibility",
-      "type": "object",
-      "description": "Represents the compatibility between two zodiac signs.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the compatibility entry."
-        },
-        "sign1": {
-          "type": "string",
-          "description": "The first zodiac sign."
-        },
-        "sign2": {
-          "type": "string",
-          "description": "The second zodiac sign."
-        },
-        "description": {
-          "type": "string",
-          "description": "Description of the compatibility between the two signs."
-        }
-      },
-      "required": [
-        "id",
-        "sign1",
-        "sign2",
-        "description"
       ]
     }
   },
@@ -129,42 +99,25 @@
         }
       },
       {
-        "path": "/users/{userId}/horoscopes/{horoscopeId}",
+        "path": "/users/{userId}/readings/{readingId}",
         "definition": {
-          "entityName": "Horoscope",
+          "entityName": "DestinyReading",
           "schema": {
-            "$ref": "#/backend/entities/Horoscope"
+            "$ref": "#/backend/entities/DestinyReading"
           },
-          "description": "Stores horoscopes specific to each user. Secured by path-based rules. Includes denormalized 'userId' for data integrity, although the path also enforces ownership.",
+          "description": "Stores destiny readings specific to each user.",
           "params": [
             {
               "name": "userId",
               "description": "The unique identifier of the user."
             },
             {
-              "name": "horoscopeId",
-              "description": "The unique identifier of the horoscope entry."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/compatibility/{compatibilityId}",
-        "definition": {
-          "entityName": "Compatibility",
-          "schema": {
-            "$ref": "#/backend/entities/Compatibility"
-          },
-          "description": "Stores compatibility information between zodiac signs. This data is globally readable.",
-          "params": [
-            {
-              "name": "compatibilityId",
-              "description": "The unique identifier for the compatibility entry."
+              "name": "readingId",
+              "description": "The unique identifier of the reading entry."
             }
           ]
         }
       }
-    ],
-    "reasoning": "The Firestore structure is designed to ensure security, scalability, and debuggability, adhering to the principles of Authorization Independence, Clarity of Intent, DBAC, and QAPs. It uses path-based ownership for user data and denormalization to avoid `get()` calls in security rules.\n\n1.  **Users Collection:** The `/users/{userId}` collection stores user profiles. This private data is secured using path-based rules. Only the authenticated user can read/write their own profile.\n2.  **Horoscopes Subcollection:** The `/users/{userId}/horoscopes/{horoscopeId}` subcollection stores horoscopes specific to each user.  This leverages path-based ownership to secure access.  Each document includes the `userId` field, which is redundant given the path structure, but reinforces data integrity.\n3.  **Compatibility Collection:** The `/compatibility/{compatibilityId}` collection stores compatibility information between zodiac signs. This data is globally readable.\n\n**Authorization Independence:** The structure eliminates the need for `get()` calls in security rules by using path-based ownership, especially in the `users` and `horoscopes` collections.  This allows for atomic operations and easier debugging.\n\n**QAPs:** The design supports secure `list` operations by segregating data with different access needs into separate collections.  The `/users/{userId}` and `/users/{userId}/horoscopes` collections are secured by path-based ownership, allowing secure `list` operations constrained to the requesting user. The `/compatibility` collection is globally readable, so listing is also not a security concern."
+    ]
   }
 }

@@ -25,16 +25,11 @@ export function Hero() {
           Discover Your Cosmic Blueprint
         </h1>
         <p className="mt-6 text-sm sm:text-lg leading-8 text-gray-300 font-body max-w-2xl mx-auto">
-          Unveil the secrets of the stars with personalized horoscopes,
-          compatibility checks, and birth chart overviews. Your journey into
-          astrology starts here.
+          Unveil the secrets of your destiny by combining the wisdom of the stars and the lines on your hand.
         </p>
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-y-4 gap-x-6">
           <Button asChild size="lg">
-            <Link href="#horoscope">Get Your Horoscope</Link>
-          </Button>
-          <Button asChild variant="ghost" size="lg" className="text-white">
-            <Link href="#birth-chart">Explore Your Chart →</Link>
+            <Link href="#reading">Get Your Reading</Link>
           </Button>
         </div>
       </div>

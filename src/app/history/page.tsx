@@ -22,10 +22,10 @@ export default function HistoryPage() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
 
-  const horoscopesQuery = useMemoFirebase(() => {
+  const readingsQuery = useMemoFirebase(() => {
     if (user && firestore) {
       return query(
-        collection(firestore, 'users', user.uid, 'horoscopes'),
+        collection(firestore, 'users', user.uid, 'readings'),
         orderBy('date', 'desc'),
         limit(10)
       );
@@ -33,7 +33,7 @@ export default function HistoryPage() {
     return null;
   }, [user, firestore]);
 
-  const { data: horoscopes, isLoading, error } = useCollection(horoscopesQuery);
+  const { data: readings, isLoading, error } = useCollection(readingsQuery);
 
   if (isUserLoading) {
     return (
@@ -68,10 +68,10 @@ export default function HistoryPage() {
             </Button>
             <div className="text-center">
               <h2 className="text-2xl font-headline font-bold text-white sm:text-3xl">
-                Your Horoscope History
+                Your Reading History
               </h2>
               <p className="mt-4 text-base text-gray-300 sm:text-lg">
-                A log of your recent cosmic forecasts.
+                A log of your recent destiny readings.
               </p>
             </div>
 
@@ -80,33 +80,34 @@ export default function HistoryPage() {
                 <div className="flex justify-center">
                   <Loader2 className="h-8 w-8 animate-spin" />
                 </div>
+
               )}
               {error && (
                 <Alert variant="destructive">
                   <AlertTitle>Error</AlertTitle>
                   <AlertDescription>
-                    Could not load your horoscope history. Please try again later.
+                    Could not load your history. Please try again later.
                   </AlertDescription>
                 </Alert>
               )}
-              {!isLoading && !error && horoscopes && horoscopes.length === 0 && (
+              {!isLoading && !error && readings && readings.length === 0 && (
                 <Card className="bg-card/50">
                   <CardContent className="p-6 text-center">
-                    <p>You have no saved horoscopes yet. Generate one to start your history!</p>
+                    <p>You have no saved readings yet. Generate one to start your history!</p>
                   </CardContent>
                 </Card>
               )}
-              {horoscopes?.map((horoscope) => (
-                <Card key={horoscope.id} className="bg-card/50">
+              {readings?.map((reading) => (
+                <Card key={reading.id} className="bg-card/50">
                   <CardHeader>
-                    <CardTitle>{horoscope.zodiacSign} Horoscope</CardTitle>
+                    <CardTitle>Destiny Reading</CardTitle>
                     <CardDescription>
-                      {horoscope.date?.toDate && format(horoscope.date.toDate(), 'MMMM d, yyyy - h:mm a')}
+                      {reading.date?.toDate && format(reading.date.toDate(), 'MMMM d, yyyy - h:mm a')}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <p className="whitespace-pre-wrap font-body text-base text-gray-300">
-                      {horoscope.content}
+                      {reading.content}
                     </p>
                   </CardContent>
                 </Card>

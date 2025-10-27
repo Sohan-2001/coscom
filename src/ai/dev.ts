@@ -1,4 +1,4 @@
 import { config } from 'dotenv';
 config();
 
-import '@/ai/flows/personalized-daily-horoscope.ts';
+import '@/ai/flows/destiny-reading-flow.ts';
