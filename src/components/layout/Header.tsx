@@ -38,7 +38,8 @@ export function Header() {
           <div className="hidden md:flex">
             <UserNav />
           </div>
-          <div className="flex md:hidden">
+          <div className="flex items-center gap-2 md:hidden">
+             <UserNav />
             <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
@@ -60,9 +61,6 @@ export function Header() {
                       History
                     </Link>
                   )}
-                   <div className="absolute bottom-4 left-4">
-                    <UserNav />
-                  </div>
                 </div>
               </SheetContent>
             </Sheet>
