@@ -118,9 +118,9 @@ export function PersonalizedHoroscope() {
                   name="birthDate"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Birth Date</FormLabel>
+                      <FormLabel className="text-xs sm:text-sm">Birth Date</FormLabel>
                       <FormControl>
-                        <Input type="date" {...field} disabled={!user} />
+                        <Input type="date" {...field} disabled={!user} className="text-xs sm:text-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -131,9 +131,9 @@ export function PersonalizedHoroscope() {
                   name="birthTime"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Birth Time</FormLabel>
+                      <FormLabel className="text-xs sm:text-sm">Birth Time</FormLabel>
                       <FormControl>
-                        <Input type="time" {...field} disabled={!user} />
+                        <Input type="time" {...field} disabled={!user} className="text-xs sm:text-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -144,14 +144,14 @@ export function PersonalizedHoroscope() {
                   name="zodiacSign"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Zodiac Sign</FormLabel>
+                      <FormLabel className="text-xs sm:text-sm">Zodiac Sign</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                         disabled={!user}
                       >
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="text-xs sm:text-sm">
                             <SelectValue placeholder="Select your sign" />
                           </SelectTrigger>
                         </FormControl>
@@ -168,7 +168,7 @@ export function PersonalizedHoroscope() {
                   )}
                 />
                 <div className="md:col-span-3 text-center pt-2">
-                  <Button type="submit" disabled={isLoading || !user} className="w-full sm:w-auto" size="default">
+                  <Button type="submit" disabled={isLoading || !user} className="w-full sm:w-auto text-xs sm:text-sm" size="default">
                     {isLoading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />{' '}

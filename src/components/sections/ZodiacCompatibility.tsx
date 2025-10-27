@@ -57,12 +57,12 @@ export function ZodiacCompatibility() {
           <CardContent className="p-4 sm:p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Your Sign</label>
+                <label className="text-xs sm:text-sm font-medium">Your Sign</label>
                 <Select
                   onValueChange={(value) => setSign1(value as ZodiacSignName)}
                   disabled={!user}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="text-xs sm:text-sm">
                     <SelectValue placeholder="Select a sign" />
                   </SelectTrigger>
                   <SelectContent>
@@ -76,12 +76,12 @@ export function ZodiacCompatibility() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Their Sign</label>
+                <label className="text-xs sm:text-sm font-medium">Their Sign</label>
                 <Select
                   onValueChange={(value) => setSign2(value as ZodiacSignName)}
                   disabled={!user}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="text-xs sm:text-sm">
                     <SelectValue placeholder="Select a sign" />
                   </SelectTrigger>
                   <SelectContent>
@@ -97,7 +97,7 @@ export function ZodiacCompatibility() {
               <Button
                 onClick={checkCompatibility}
                 disabled={!sign1 || !sign2 || !user}
-                className="w-full mt-2 md:mt-0"
+                className="w-full mt-2 md:mt-0 text-xs sm:text-sm"
               >
                 {!user && <Lock className="mr-2 h-4 w-4" />}
                 {user ? 'Check Compatibility' : 'Login to Check'}

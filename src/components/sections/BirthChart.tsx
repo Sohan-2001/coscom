@@ -80,7 +80,7 @@ export function BirthChart() {
               className="flex flex-col sm:flex-row items-end gap-4"
             >
               <div className="w-full sm:w-auto flex-grow space-y-2">
-                <label htmlFor="birth-date-chart" className="text-sm font-medium">
+                <label htmlFor="birth-date-chart" className="text-xs sm:text-sm font-medium">
                   Birth Date
                 </label>
                 <Input
@@ -89,9 +89,10 @@ export function BirthChart() {
                   value={birthDate}
                   onChange={(e) => setBirthDate(e.target.value)}
                   disabled={!user}
+                  className="text-xs sm:text-sm"
                 />
               </div>
-              <Button type="submit" disabled={!user} className="w-full sm:w-auto">
+              <Button type="submit" disabled={!user} className="w-full sm:w-auto text-xs sm:text-sm">
                 {!user && <Lock className="mr-2 h-4 w-4" />}
                 {user ? 'Generate Chart' : 'Login to Generate'}
               </Button>
@@ -152,7 +153,7 @@ export function BirthChart() {
                       transform: 'translate(-50%, -50%)',
                     }}
                   >
-                    <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-accent-foreground" />
+                    <Icon className="w-5 h-5 sm:w-6 smh-6 text-accent-foreground" />
                   </div>
                 );
               })}
