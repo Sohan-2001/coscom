@@ -24,7 +24,7 @@ export function Header() {
             Cosmic Insights
           </span>
         </Link>
-        <nav className="hidden md:flex items-center gap-6 text-sm flex-1">
+        <nav className="hidden md:flex items-center gap-6 text-sm">
           {user && (
             <Link
               href="/history"
@@ -34,31 +34,36 @@ export function Header() {
             </Link>
           )}
         </nav>
-        <div className="flex flex-1 items-center justify-end md:hidden">
-          <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-6 w-6" />
-                <span className="sr-only">Open Menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left">
-              <div className="flex flex-col gap-6 pt-10">
-                <Link href="/" className="flex items-center space-x-2" onClick={closeSheet}>
-                  <Sparkles className="h-6 w-6 text-primary" />
-                  <span className="font-bold">Cosmic Insights</span>
-                </Link>
-                {user && (
-                  <Link href="/history" className="text-muted-foreground hover:text-primary" onClick={closeSheet}>
-                    History
+        <div className="flex flex-1 items-center justify-end gap-4">
+          <div className="hidden md:flex">
+            <UserNav />
+          </div>
+          <div className="flex md:hidden">
+            <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Open Menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left">
+                <div className="flex flex-col gap-6 pt-10">
+                  <Link href="/" className="flex items-center space-x-2" onClick={closeSheet}>
+                    <Sparkles className="h-6 w-6 text-primary" />
+                    <span className="font-bold">Cosmic Insights</span>
                   </Link>
-                )}
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-        <div className="hidden md:flex items-center justify-end">
-          <UserNav />
+                  {user && (
+                    <Link href="/history" className="text-muted-foreground hover:text-primary" onClick={closeSheet}>
+                      History
+                    </Link>
+                  )}
+                   <div className="absolute bottom-4 left-4">
+                    <UserNav />
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </header>
