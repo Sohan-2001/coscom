@@ -98,10 +98,10 @@ export function PersonalizedHoroscope() {
     <section id="horoscope" className="py-16 sm:py-24 bg-background">
       <div className="container max-w-4xl">
         <div className="text-center">
-          <h2 className="text-3xl font-headline font-bold text-white sm:text-4xl">
+          <h2 className="text-2xl font-headline font-bold text-white sm:text-3xl">
             Your Daily Cosmic Forecast
           </h2>
-          <p className="mt-4 text-lg text-gray-300">
+          <p className="mt-4 text-base text-gray-300 sm:text-lg">
             Enter your birth details to generate a personalized horoscope for
             today, crafted by our AI astrologer.
           </p>

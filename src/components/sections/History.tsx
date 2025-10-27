@@ -35,10 +35,10 @@ export function History() {
     <section id="history" className="py-16 sm:py-24 bg-secondary/20">
       <div className="container max-w-4xl">
         <div className="text-center">
-          <h2 className="text-3xl font-headline font-bold text-white sm:text-4xl">
+          <h2 className="text-2xl font-headline font-bold text-white sm:text-3xl">
             Your Horoscope History
           </h2>
-          <p className="mt-4 text-lg text-gray-300">
+          <p className="mt-4 text-base text-gray-300 sm:text-lg">
             A log of your recent cosmic forecasts.
           </p>
         </div>

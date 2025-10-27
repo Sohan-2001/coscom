@@ -44,10 +44,10 @@ export function ZodiacCompatibility() {
     <section id="compatibility" className="py-16 sm:py-24 bg-secondary/20">
       <div className="container max-w-4xl">
         <div className="text-center">
-          <h2 className="text-3xl font-headline font-bold text-white sm:text-4xl">
+          <h2 className="text-2xl font-headline font-bold text-white sm:text-3xl">
             Zodiac Compatibility
           </h2>
-          <p className="mt-4 text-lg text-gray-300">
+          <p className="mt-4 text-base text-gray-300 sm:text-lg">
             Curious about your connection with someone? Select two zodiac signs
             to reveal your cosmic synergy.
           </p>

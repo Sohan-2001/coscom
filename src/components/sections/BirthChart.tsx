@@ -64,10 +64,10 @@ export function BirthChart() {
     <section id="birth-chart" className="py-16 sm:py-24 bg-background">
       <div className="container max-w-4xl" ref={containerRef}>
         <div className="text-center">
-          <h2 className="text-3xl font-headline font-bold text-white sm:text-4xl">
+          <h2 className="text-2xl font-headline font-bold text-white sm:text-3xl">
             Your Birth Chart
           </h2>
-          <p className="mt-4 text-lg text-gray-300">
+          <p className="mt-4 text-base text-gray-300 sm:text-lg">
             A snapshot of the heavens at your moment of birth. Enter your birth
             date for a simplified overview.
           </p>
