@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -96,7 +97,7 @@ export function ZodiacCompatibility() {
               <Button
                 onClick={checkCompatibility}
                 disabled={!sign1 || !sign2 || !user}
-                className="w-full"
+                className="w-full mt-4 md:mt-0"
               >
                 {!user && <Lock className="mr-2 h-4 w-4" />}
                 {user ? 'Check Compatibility' : 'Login to Check'}

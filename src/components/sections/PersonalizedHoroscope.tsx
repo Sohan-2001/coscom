@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -110,7 +111,7 @@ export function PersonalizedHoroscope() {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end"
+                className="grid grid-cols-1 md:grid-cols-3 gap-6"
               >
                 <FormField
                   control={form.control}

@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
@@ -20,7 +21,7 @@ export function Hero() {
       )}
       <div className="absolute inset-0 bg-background/70" />
       <div className="relative z-10 max-w-4xl px-4">
-        <h1 className="text-4xl font-headline font-bold tracking-tight text-white sm:text-6xl lg:text-7xl whitespace-nowrap">
+        <h1 className="text-3xl font-headline font-bold tracking-tight text-white sm:text-5xl lg:text-6xl whitespace-nowrap">
           Discover Your Cosmic Blueprint
         </h1>
         <p className="mt-6 text-lg leading-8 text-gray-300 font-body max-w-2xl mx-auto">
@@ -28,7 +29,7 @@ export function Hero() {
           compatibility checks, and birth chart overviews. Your journey into
           astrology starts here.
         </p>
-        <div className="mt-10 flex items-center justify-center gap-x-6">
+        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-y-4 gap-x-6">
           <Button asChild size="lg">
             <Link href="#horoscope">Get Your Horoscope</Link>
           </Button>

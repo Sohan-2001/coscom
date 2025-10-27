@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -20,6 +21,22 @@ export function BirthChart() {
   const [showChart, setShowChart] = useState(false);
   const [planetPositions, setPlanetPositions] = useState<PlanetPosition[]>([]);
   const { user } = useUser();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [chartSize, setChartSize] = useState(400);
+
+  useEffect(() => {
+    function handleResize() {
+      if (containerRef.current) {
+        const containerWidth = containerRef.current.offsetWidth;
+        const padding = 32; // Corresponds to p-4 on container
+        const size = Math.min(containerWidth - padding, 400);
+        setChartSize(size);
+      }
+    }
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (showChart) {
@@ -39,14 +56,13 @@ export function BirthChart() {
     }
   };
 
-  const chartSize = 400; // in pixels
   const center = chartSize / 2;
   const zodiacRadius = chartSize / 2 - 20;
   const planetRadius = chartSize / 2 - 70;
 
   return (
     <section id="birth-chart" className="py-16 sm:py-24 bg-background">
-      <div className="container max-w-4xl">
+      <div className="container max-w-4xl" ref={containerRef}>
         <div className="text-center">
           <h2 className="text-3xl font-headline font-bold text-white sm:text-4xl">
             Your Birth Chart
