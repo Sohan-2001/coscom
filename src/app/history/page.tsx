@@ -11,12 +11,20 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import type { DestinyReadingOutput } from '@/ai/flows/destiny-reading-flow';
+
 
 export default function HistoryPage() {
   const { user, isUserLoading } = useUser();
@@ -34,6 +42,27 @@ export default function HistoryPage() {
   }, [user, firestore]);
 
   const { data: readings, isLoading, error } = useCollection(readingsQuery);
+
+  const readingSections: (keyof DestinyReadingOutput)[] = [
+    'foundationalOverview',
+    'careerAndWealth',
+    'healthAndVitality',
+    'loveAndRelationships',
+    'personalityAndInnerGrowth',
+    'lifePathAndTimeline',
+    'guidanceAndRemedies',
+  ];
+
+  const sectionTitles: Record<keyof DestinyReadingOutput, string> = {
+    foundationalOverview: 'Foundational Overview',
+    careerAndWealth: 'Career, Wealth, and Success',
+    healthAndVitality: 'Health and Vitality',
+    loveAndRelationships: 'Love and Relationships',
+    personalityAndInnerGrowth: 'Personality and Inner Growth',
+    lifePathAndTimeline: 'Life Path and Timeline Summary',
+    guidanceAndRemedies: 'Guidance and Remedies',
+  };
+
 
   if (isUserLoading) {
     return (
@@ -106,9 +135,28 @@ export default function HistoryPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p className="whitespace-pre-wrap font-body text-base text-gray-300">
-                      {reading.content}
-                    </p>
+                     {typeof reading.content === 'string' ? (
+                        <p className="whitespace-pre-wrap font-body text-base text-gray-300">
+                          {reading.content}
+                        </p>
+                      ) : (
+                        <Accordion type="single" collapsible className="w-full">
+                          {readingSections.map((sectionKey) => (
+                            reading.content[sectionKey] && (
+                              <AccordionItem value={sectionKey} key={sectionKey}>
+                                <AccordionTrigger className="text-lg font-semibold text-primary">
+                                  {sectionTitles[sectionKey]}
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                  <p className="whitespace-pre-wrap font-body text-base text-gray-300">
+                                    {reading.content[sectionKey]}
+                                  </p>
+                                </AccordionContent>
+                              </AccordionItem>
+                            )
+                          ))}
+                        </Accordion>
+                      )}
                   </CardContent>
                 </Card>
               ))}

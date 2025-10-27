@@ -23,6 +23,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { Loader2, Wand2, Lock, Upload } from 'lucide-react';
 import type { DestinyReadingOutput } from '@/ai/flows/destiny-reading-flow';
 import { useToast } from '@/hooks/use-toast';
@@ -98,7 +104,7 @@ export function DestinyReading() {
           await addDoc(readingsCol, {
             userId: user.uid,
             date: serverTimestamp(),
-            content: result.data.reading,
+            content: result.data,
             birthDate: values.birthDate,
             birthTime: values.birthTime,
             birthPlace: values.birthPlace,
@@ -120,6 +126,26 @@ export function DestinyReading() {
       });
     }
   }
+
+  const readingSections: (keyof DestinyReadingOutput)[] = [
+    'foundationalOverview',
+    'careerAndWealth',
+    'healthAndVitality',
+    'loveAndRelationships',
+    'personalityAndInnerGrowth',
+    'lifePathAndTimeline',
+    'guidanceAndRemedies',
+  ];
+
+  const sectionTitles: Record<keyof DestinyReadingOutput, string> = {
+    foundationalOverview: 'Foundational Overview',
+    careerAndWealth: 'Career, Wealth, and Success',
+    healthAndVitality: 'Health and Vitality',
+    loveAndRelationships: 'Love and Relationships',
+    personalityAndInnerGrowth: 'Personality and Inner Growth',
+    lifePathAndTimeline: 'Life Path and Timeline Summary',
+    guidanceAndRemedies: 'Guidance and Remedies',
+  };
 
   return (
     <section id="reading" className="py-16 sm:py-24 bg-background">
@@ -237,9 +263,22 @@ export function DestinyReading() {
               <CardDescription>An integrated analysis of your life path.</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="whitespace-pre-wrap font-body text-base text-gray-300">
-                {reading.reading}
-              </p>
+               <Accordion type="single" collapsible className="w-full" defaultValue="foundationalOverview">
+                {readingSections.map((sectionKey) => (
+                  reading[sectionKey] && (
+                    <AccordionItem value={sectionKey} key={sectionKey}>
+                      <AccordionTrigger className="text-lg font-semibold text-primary">
+                        {sectionTitles[sectionKey]}
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <p className="whitespace-pre-wrap font-body text-base text-gray-300">
+                          {reading[sectionKey]}
+                        </p>
+                      </AccordionContent>
+                    </AccordionItem>
+                  )
+                ))}
+              </Accordion>
             </CardContent>
           </Card>
         )}
