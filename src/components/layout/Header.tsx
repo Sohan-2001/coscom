@@ -1,10 +1,14 @@
+
 'use client';
 
 import Link from 'next/link';
 import { Sparkles } from 'lucide-react';
 import { UserNav } from '@/components/layout/UserNav';
+import { useUser } from '@/firebase';
 
 export function Header() {
+  const { user } = useUser();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 max-w-screen-2xl items-center">
@@ -33,6 +37,14 @@ export function Header() {
           >
             Birth Chart
           </Link>
+          {user && (
+            <Link
+              href="#history"
+              className="transition-colors hover:text-primary"
+            >
+              History
+            </Link>
+          )}
         </nav>
         <UserNav />
       </div>

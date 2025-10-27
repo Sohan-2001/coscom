@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -33,6 +34,8 @@ import { Loader2, Wand2 } from 'lucide-react';
 import { ZODIAC_SIGNS } from '@/data/zodiac';
 import type { PersonalizedDailyHoroscopeOutput } from '@/ai/flows/personalized-daily-horoscope';
 import { useToast } from '@/hooks/use-toast';
+import { useFirestore, useUser } from '@/firebase';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 
 const formSchema = z.object({
   birthDate: z.string().min(1, 'Birth date is required.'),
@@ -45,6 +48,8 @@ export function PersonalizedHoroscope() {
   const [horoscope, setHoroscope] =
     useState<PersonalizedDailyHoroscopeOutput | null>(null);
   const { toast } = useToast();
+  const firestore = useFirestore();
+  const { user } = useUser();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,6 +67,24 @@ export function PersonalizedHoroscope() {
     setIsLoading(false);
     if (result.success && result.data) {
       setHoroscope(result.data);
+      if (user && firestore) {
+        try {
+          const horoscopesCol = collection(firestore, 'users', user.uid, 'horoscopes');
+          await addDoc(horoscopesCol, {
+            userId: user.uid,
+            date: serverTimestamp(),
+            content: result.data.horoscope,
+            zodiacSign: values.zodiacSign,
+          });
+        } catch (error) {
+          console.error("Error saving horoscope:", error);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Could not save your horoscope to history.",
+          });
+        }
+      }
     } else {
       toast({
         variant: 'destructive',
