@@ -18,7 +18,8 @@ import {
 } from '@/components/ui/select';
 import { ZODIAC_SIGNS, getCompatibility, ZodiacSignName } from '@/data/zodiac';
 import { getZodiacIcon } from '@/components/AstrologyIcons';
-import { Heart } from 'lucide-react';
+import { Heart, Lock } from 'lucide-react';
+import { useUser } from '@/firebase';
 
 export function ZodiacCompatibility() {
   const [sign1, setSign1] = useState<ZodiacSignName | null>(null);
@@ -27,6 +28,7 @@ export function ZodiacCompatibility() {
     level: string;
     text: string;
   } | null>(null);
+  const { user } = useUser();
 
   const checkCompatibility = () => {
     if (sign1 && sign2) {
@@ -57,6 +59,7 @@ export function ZodiacCompatibility() {
                 <label className="text-sm font-medium">Your Sign</label>
                 <Select
                   onValueChange={(value) => setSign1(value as ZodiacSignName)}
+                  disabled={!user}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select a sign" />
@@ -75,6 +78,7 @@ export function ZodiacCompatibility() {
                 <label className="text-sm font-medium">Their Sign</label>
                 <Select
                   onValueChange={(value) => setSign2(value as ZodiacSignName)}
+                  disabled={!user}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select a sign" />
@@ -91,10 +95,11 @@ export function ZodiacCompatibility() {
 
               <Button
                 onClick={checkCompatibility}
-                disabled={!sign1 || !sign2}
+                disabled={!sign1 || !sign2 || !user}
                 className="w-full"
               >
-                Check Compatibility
+                {!user && <Lock className="mr-2 h-4 w-4" />}
+                {user ? 'Check Compatibility' : 'Login to Check'}
               </Button>
             </div>
           </CardContent>

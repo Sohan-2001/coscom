@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { ZODIAC_SIGNS, PLANETS } from '@/data/zodiac';
 import { getZodiacIcon, getPlanetIcon } from '@/components/AstrologyIcons';
 import type { Planet } from '@/data/zodiac';
+import { useUser } from '@/firebase';
+import { Lock } from 'lucide-react';
 
 interface PlanetPosition {
   planet: Planet;
@@ -17,6 +19,7 @@ export function BirthChart() {
   const [birthDate, setBirthDate] = useState('2000-01-01');
   const [showChart, setShowChart] = useState(false);
   const [planetPositions, setPlanetPositions] = useState<PlanetPosition[]>([]);
+  const { user } = useUser();
 
   useEffect(() => {
     if (showChart) {
@@ -31,7 +34,9 @@ export function BirthChart() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setShowChart(true);
+    if (user) {
+      setShowChart(true);
+    }
   };
 
   const chartSize = 400; // in pixels
@@ -67,14 +72,18 @@ export function BirthChart() {
                   type="date"
                   value={birthDate}
                   onChange={(e) => setBirthDate(e.target.value)}
+                  disabled={!user}
                 />
               </div>
-              <Button type="submit">Generate Chart</Button>
+              <Button type="submit" disabled={!user}>
+                {!user && <Lock className="mr-2 h-4 w-4" />}
+                {user ? 'Generate Chart' : 'Login to Generate'}
+              </Button>
             </form>
           </CardContent>
         </Card>
 
-        {showChart && (
+        {showChart && user && (
           <div className="mt-8 flex justify-center animate-fade-in">
             <div
               className="relative"

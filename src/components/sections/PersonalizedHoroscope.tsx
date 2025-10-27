@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -30,7 +29,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Loader2, Wand2 } from 'lucide-react';
+import { Loader2, Wand2, Lock } from 'lucide-react';
 import { ZODIAC_SIGNS } from '@/data/zodiac';
 import type { PersonalizedDailyHoroscopeOutput } from '@/ai/flows/personalized-daily-horoscope';
 import { useToast } from '@/hooks/use-toast';
@@ -120,7 +119,7 @@ export function PersonalizedHoroscope() {
                     <FormItem>
                       <FormLabel>Birth Date</FormLabel>
                       <FormControl>
-                        <Input type="date" {...field} />
+                        <Input type="date" {...field} disabled={!user} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -133,7 +132,7 @@ export function PersonalizedHoroscope() {
                     <FormItem>
                       <FormLabel>Birth Time</FormLabel>
                       <FormControl>
-                        <Input type="time" {...field} />
+                        <Input type="time" {...field} disabled={!user} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -148,6 +147,7 @@ export function PersonalizedHoroscope() {
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
+                        disabled={!user}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -167,11 +167,15 @@ export function PersonalizedHoroscope() {
                   )}
                 />
                 <div className="md:col-span-3 text-center pt-4">
-                  <Button type="submit" disabled={isLoading} size="lg">
+                  <Button type="submit" disabled={isLoading || !user} size="lg">
                     {isLoading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />{' '}
                         Generating...
+                      </>
+                    ) : !user ? (
+                      <>
+                        <Lock className="mr-2 h-4 w-4" /> Please Login to Generate
                       </>
                     ) : (
                       <>
