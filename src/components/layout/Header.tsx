@@ -26,26 +26,26 @@ export function Header() {
         </Link>
         <nav className="hidden md:flex items-center gap-6 text-sm flex-1">
           <Link
-            href="#horoscope"
+            href="/#horoscope"
             className="transition-colors hover:text-primary"
           >
             Personalized Horoscope
           </Link>
           <Link
-            href="#compatibility"
+            href="/#compatibility"
             className="transition-colors hover:text-primary"
           >
             Compatibility
           </Link>
           <Link
-            href="#birth-chart"
+            href="/#birth-chart"
             className="transition-colors hover:text-primary"
           >
             Birth Chart
           </Link>
           {user && (
             <Link
-              href="#history"
+              href="/history"
               className="transition-colors hover:text-primary"
             >
               History
@@ -66,17 +66,17 @@ export function Header() {
                   <Sparkles className="h-6 w-6 text-primary" />
                   <span className="font-bold">Cosmic Insights</span>
                 </Link>
-                <Link href="#horoscope" className="text-muted-foreground hover:text-primary" onClick={closeSheet}>
+                <Link href="/#horoscope" className="text-muted-foreground hover:text-primary" onClick={closeSheet}>
                   Personalized Horoscope
                 </Link>
-                <Link href="#compatibility" className="text-muted-foreground hover:text-primary" onClick={closeSheet}>
+                <Link href="/#compatibility" className="text-muted-foreground hover:text-primary" onClick={closeSheet}>
                   Compatibility
                 </Link>
-                <Link href="#birth-chart" className="text-muted-foreground hover:text-primary" onClick={closeSheet}>
+                <Link href="/#birth-chart" className="text-muted-foreground hover:text-primary" onClick={closeSheet}>
                   Birth Chart
                 </Link>
                 {user && (
-                  <Link href="#history" className="text-muted-foreground hover:text-primary" onClick={closeSheet}>
+                  <Link href="/history" className="text-muted-foreground hover:text-primary" onClick={closeSheet}>
                     History
                   </Link>
                 )}

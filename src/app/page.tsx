@@ -7,11 +7,8 @@ import { Hero } from '@/components/sections/Hero';
 import { PersonalizedHoroscope } from '@/components/sections/PersonalizedHoroscope';
 import { ZodiacCompatibility } from '@/components/sections/ZodiacCompatibility';
 import { BirthChart } from '@/components/sections/BirthChart';
-import { useUser } from '@/firebase';
-import { History } from '@/components/sections/History';
 
 export default function Home() {
-  const { user } = useUser();
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -20,7 +17,6 @@ export default function Home() {
         <PersonalizedHoroscope />
         <ZodiacCompatibility />
         <BirthChart />
-        {user && <History />}
       </main>
       <Footer />
     </div>
